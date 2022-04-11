@@ -32,7 +32,6 @@ app.listen(PORT, () => {
     console.log(`Architecture Hub backend is running on port ${PORT}`)
 })
 
-
 // const { MongoClient, ServerApiVersion } = require('mongodb');
 // const uri = "mongodb+srv://ArchyScript:<password>@cluster0.unwxu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 // const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
