@@ -4,7 +4,7 @@ const router = express.Router()
 const { publicPosts, privatePosts } = require('../db/db')
 
 // Mideware for protected routes
-const checkUserAuth = require('./midleware/checkUserAuth')
+const checkUserAuth = require('./middlewares/checkUserAuth')
 
 // const { check, validationResult } = require('express-validator')
 // const bcrypt = require('bcrypt')

@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router()
+require('dotenv').config()
     // import user database
 const { users } = require('../../db/db')
-const secretKey = 'ArchyScript@10'
+const secretKey = process.env.jwt_token_secret_key
 
 // const { check, validationResult } = require('express-validator')
 const bcrypt = require('bcrypt')

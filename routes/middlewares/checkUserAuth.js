@@ -1,5 +1,6 @@
 const JWT = require('jsonwebtoken')
-const secretKey = 'ArchyScript@10'
+require('dotenv').config()
+const secretKey = process.env.jwt_token_secret_key
 
 const checkUserAuth = async(req, res, next) => {
     const userToken = await req.header('x-auth-token')
@@ -19,6 +20,7 @@ const checkUserAuth = async(req, res, next) => {
         const user = await JWT.verify(userToken, secretKey)
             // res.json(user)
             // console.log(user)
+            // @ts-ignore
         req.user = user.email
         next()
     } catch (error) {
