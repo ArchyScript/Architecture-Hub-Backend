@@ -18,9 +18,6 @@ const checkUserAuth = async(req, res, next) => {
     try {
         // use JWT to verify the user provided token with the secret key
         const user = await JWT.verify(userToken, secretKey)
-            // res.json(user)
-            // console.log(user)
-            // @ts-ignore
         req.user = user.email
         next()
     } catch (error) {
@@ -30,16 +27,6 @@ const checkUserAuth = async(req, res, next) => {
             }, ],
         })
     }
-
-    // if (userIsValid) {
-    //     next()
-    // } else {
-    //     return res.json({
-    //         errors: [{
-    //             msg: 'Access denied',
-    //         }, ],
-    //     })
-    // }
 }
 
-module.exports = checkUserAuth
+module.exports = { checkUserAuth }

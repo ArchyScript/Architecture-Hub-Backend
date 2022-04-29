@@ -20,7 +20,7 @@ const users = [{
     },
 ]
 
-const publicPosts = [{
+const public = [{
         title: 'free tips on dev',
         content: 'some tips',
     },
@@ -34,7 +34,7 @@ const publicPosts = [{
     },
 ]
 
-const privatePosts = [{
+const private = [{
         title: 'private or paid',
         content: 'private content',
     },
@@ -48,4 +48,4 @@ const privatePosts = [{
     },
 ]
 
-module.exports = { users, publicPosts, privatePosts }
+module.exports = { users, public, private }
