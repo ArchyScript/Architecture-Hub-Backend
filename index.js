@@ -18,7 +18,7 @@ app.use(express.json())
 // app.use('/', express.static(path.join(__dirname, 'static')))
 app.get('/', (req, res) => {
     return res.send(`Welcome to the Home route ... check the following routes
-    /api/posts... /api/news ... /api/users... /api/auth/*
+    /api/posts ... /api/news ... /api/users ... /api/auth/*
     `)
 })
 
