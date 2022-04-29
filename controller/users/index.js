@@ -1,5 +1,5 @@
 const User = require('../../models/users/Users')
-const Joi = require('joi')
+const Joi = require('@hapi/joi')
 
 const userSchema = {
     name: Joi.string().required().min(4).max(1024),

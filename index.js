@@ -22,6 +22,10 @@ app.get('/', (req, res) => {
     `)
 })
 
+// if (process.env.NODE_ENV === "production") {
+
+// }
+
 // routes
 const auth = require('./routes/auth/auth')
 const posts = require('./routes/posts/posts')
