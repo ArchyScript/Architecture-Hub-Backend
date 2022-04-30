@@ -19,6 +19,9 @@ const PostSchema = new mongoose.Schema({
         required: true,
         default: 0,
     },
+    people_engages_in_post: {
+        type: Array,
+    },
     date: {
         type: Date,
         default: Date.now(),

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Architecture Hub</title>
+    <style>
+        .btn {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="">Welcome to Architecture Hub</h1>
+
+        <div class="">
+            <input type="button" class="btn" value="Get All Posts" onclick="getAllPosts" />
+        </div>
+        <!-- <form id="reg-form">
+            <input type="text" id="username" autocomplete="off" placeholder="username" />
+
+            <input type="password" id="password" autocomplete="off" placeholder="password" />
+
+            <input type="submit" id="signup_btn" value="Submit" />
+        </form> -->
+    </div>
+</body>
+
+<script>
+    // const form = document.getElementById('reg-form')
+    // const signup_btn = document.getElementById('signup_btn')
+
+    // form.addEventListener('submit', resgisterUser)
+    // console.log(fetch())
+
+    async function getAllPosts() {
+        const result = await fetch('localhost:4000/api/posts')
+            .then((res) => {
+                return res
+            })
+            .then((data) => {
+                return data
+            })
+
+        return console.log(result)
+    }
+
+    // async function resgisterUser(event) {
+    //     event.preventDefault()
+
+    //     const username = document.getElementById('username').value
+    //     const password = document.getElementById('password').value
+
+    //     const result = await fetch('/api/register', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({
+    //             username,
+    //             password,
+    //         }),
+    //     }).then((res) => res.json())
+
+    //     console.log(result)
+    // }
+</script>
+
+</html>

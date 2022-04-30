@@ -1,5 +1,6 @@
 const express = require('express')
 require('dotenv').config()
+    // const cors = require('cors')
 const { connectDatabase } = require('./controller/mongooseConnect')
 const app = express()
 
@@ -13,6 +14,7 @@ connectDatabase()
 
 // Allows express use req.body on the routes
 app.use(express.json())
+    // app.use(cors)
 
 // Homme page
 // app.use('/', express.static(path.join(__dirname, 'static')))
@@ -28,13 +30,13 @@ app.get('/', (req, res) => {
 
 // routes
 const auth = require('./routes/auth/auth')
-const posts = require('./routes/posts/posts')
+const Posts = require('./routes/posts/posts')
 const users = require('./routes/users/users')
 const uploads = require('./routes/uploads/index')
 
 // referencing routes
 app.use('/api/auth', auth)
-app.use('/api/posts', posts)
+app.use('/api/posts', Posts)
 app.use('/api/users', users)
 app.use('/api/uploads', uploads)
 

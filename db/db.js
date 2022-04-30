@@ -48,4 +48,24 @@ const private = [{
     },
 ]
 
-module.exports = { users, public, private }
+const posts = [{
+        title: 'First post',
+        content: 'This is my first post',
+        no_of_likes: 1,
+        no_of_comments: 1,
+        people_engages_in_post: ['2'],
+        date: '2022-04-29T12:48:48.540Z',
+        _id: '626bdecea087b468848e7c5b',
+    },
+    {
+        title: 'Second post',
+        content: 'This is my second post',
+        no_of_likes: 1,
+        no_of_comments: 1,
+        people_engages_in_post: ['2'],
+        date: '2022-04-29T12:48:48.540Z',
+        _id: '626bdecea087b468848e7c45',
+    },
+]
+
+module.exports = { users, public, private, posts }

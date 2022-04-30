@@ -2,20 +2,37 @@ const router = require('express').Router()
 
 const {
     allPosts,
-    publicPosts,
-    privatePosts,
+    createPost,
+    specificPost,
+    updatePost,
+    deletePost,
 } = require('../../controller/posts/index')
 
 // Mideware for protected routes
-const { checkUserAuth } = require('../../middlewares/checkUserAuth')
+// const { checkUserAuth } = require('../../middlewares/checkUserAuth')
 
 // get all posts
 router.get('/', allPosts)
+    // router.get('/', (req, res) => {
+    //     res.send('test')
+    // })
 
-// public post
-router.get('/public', publicPosts)
+// get single post
+router.get('/:post_id', specificPost)
 
-// private posts
-router.get('/private', checkUserAuth, privatePosts)
+// create post
+router.post('/', createPost)
+
+// update post
+router.patch('/:post_id', updatePost)
+
+// delete post
+router.delete('/:post_id', deletePost)
+
+// // public post
+// router.get('/public', publicPosts)
+
+// // private posts
+// router.get('/private', checkUserAuth, privatePosts)
 
 module.exports = router

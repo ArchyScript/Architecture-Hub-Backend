@@ -5,9 +5,7 @@
     "main": "index.js",
     "scripts": {
         "serve": "nodemon index",
-        "start": "node index.js",
-        "dev": "concurrently \"npm run serve\" ",
-        "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false "
+        "start": "node index.js"
     },
     "author": "",
     "license": "ISC",

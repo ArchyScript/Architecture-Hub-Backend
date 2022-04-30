@@ -12,41 +12,10 @@
     <div class="container">
         <h1 class="">Welcome to Architecture Hub</h1>
 
-        <form id="reg-form">
-            <input type="text" id="username" autocomplete="off" placeholder="username" />
-
-            <input type="password" id="password" autocomplete="off" placeholder="password" />
-
-            <input type="submit" id="signup_btn" value="Submit" />
-        </form>
+        <h4>You've successfully logge in</h4>
     </div>
 </body>
 
-<script>
-    const form = document.getElementById('reg-form')
-    const signup_btn = document.getElementById('signup_btn')
-
-    form.addEventListener('submit', resgisterUser)
-
-    async function resgisterUser(event) {
-        event.preventDefault()
-
-        const username = document.getElementById('username').value
-        const password = document.getElementById('password').value
-
-        const result = await fetch('/api/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username,
-                password,
-            }),
-        }).then((res) => res.json())
-
-        console.log(result)
-    }
-</script>
+<script></script>
 
 </html>
