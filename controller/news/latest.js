@@ -3,10 +3,6 @@ const { postValidation } = require('../../validation/posts/index')
 
 // Get all posts
 const allPosts = async(req, res) => {
-    // res.send(req.user)
-    // const { user_id } = req.user
-    // console.log(user_id)
-
     try {
         const posts = await Post.find()
         res.send(posts)
@@ -81,7 +77,7 @@ const updatePost = async(req, res) => {
 const deletePost = async(req, res) => {
     const post_Id = req.params.post_id
     try {
-        const deletedPost = await Post.deleteOne({ _id: post_Id })
+        const deletedPost = await Post.remove({ _id: post_Id })
         res.send(deletedPost)
     } catch (error) {
         res.send(error)

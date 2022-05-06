@@ -1,13 +1,15 @@
 const router = require('express').Router()
+const {
+    allUsers,
+    specificUser,
+    updateUserAccount,
+    deleteUserAccount,
+} = require('../../controller/users/index')
 
-const { allUsers, createUser } = require('../../controller/users/index')
-
-// Mideware for protected routes
-
-// get all posts
+//
 router.get('/', allUsers)
-
-// create new user
-router.post('/', createUser)
+router.get('/:user_id', specificUser)
+router.patch('/:user_id', updateUserAccount)
+router.delete('/:user_id', deleteUserAccount)
 
 module.exports = router

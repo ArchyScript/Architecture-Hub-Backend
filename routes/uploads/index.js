@@ -6,7 +6,13 @@ const {
     maximum_image_upload,
 } = require('../../controller/uploads/index')
 
+//
+//
+//
+//
 // single image upload
+router.post('/profile', upload.single('image'), singleUpload)
+
 router.post('/single', upload.single('image'), singleUpload)
 
 // multiple files upload

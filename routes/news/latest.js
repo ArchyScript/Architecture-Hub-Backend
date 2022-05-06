@@ -6,10 +6,9 @@ const {
     updatePost,
     deletePost,
 } = require('../../controller/posts/index')
-const { checkUserAuth } = require('../../middlewares/checkUserAuth')
 
 // get all posts
-router.get('/', checkUserAuth, allPosts)
+router.get('/', allPosts)
 router.get('/:post_id', specificPost)
 router.post('/', createPost)
 router.patch('/:post_id', updatePost)

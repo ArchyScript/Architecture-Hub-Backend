@@ -4,6 +4,7 @@ const AuthSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
+        unique: true,
         min: 6,
         max: 256,
     },

@@ -3,8 +3,7 @@ require('dotenv').config()
     // const cors = require('cors')
 const { connectDatabase } = require('./controller/mongooseConnect')
 const app = express()
-
-// const path = require('path')
+const path = require('path')
 
 // API port
 const PORT = process.env.PORT || 4000
@@ -17,12 +16,12 @@ app.use(express.json())
     // app.use(cors)
 
 // Homme page
-// app.use('/', express.static(path.join(__dirname, 'static')))
-app.get('/', (req, res) => {
-    return res.send(`Welcome to the Home route ... check the following routes
-    /api/posts ... /api/news ... /api/users ... /api/auth/*
-    `)
-})
+app.use('/', express.static(path.join(__dirname, 'static')))
+    // app.get('/', (req, res) => {
+    //     return res.send(`Welcome to the Home route ... check the following routes
+    //     /api/posts ... /api/news ... /api/users ... /api/auth/*
+    //     `)
+    // })
 
 // if (process.env.NODE_ENV === "production") {
 
@@ -32,12 +31,14 @@ app.get('/', (req, res) => {
 const auth = require('./routes/auth/auth')
 const Posts = require('./routes/posts/posts')
 const users = require('./routes/users/users')
+const news = require('./routes/news/news')
 const uploads = require('./routes/uploads/index')
 
 // referencing routes
 app.use('/api/auth', auth)
 app.use('/api/posts', Posts)
 app.use('/api/users', users)
+app.use('/api/news', news)
 app.use('/api/uploads', uploads)
 
 //

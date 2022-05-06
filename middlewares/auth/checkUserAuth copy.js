@@ -7,17 +7,25 @@ const checkUserAuth = async(req, res, next) => {
 
     // Checks if a token is found in the header
     if (!userToken) {
-        return res.status(401).send('Access Denied')
+        return res.status(401).json({
+            errors: [{
+                msg: 'No token found',
+            }, ],
+        })
     }
 
     // Checks if the provided token is a valid one
     try {
         // use JWT to verify the user provided token with the secret key
-        const verifiedUser = await JWT.verify(userToken, SECRET_KEY)
-        req.user = verifiedUser
+        const user = await JWT.verify(userToken, SECRET_KEY)
+        req.user = user.email
         next()
     } catch (error) {
-        return res.status(400).send('Invalid Token')
+        return res.json({
+            errors: [{
+                msg: 'Invalid token',
+            }, ],
+        })
     }
 }
 

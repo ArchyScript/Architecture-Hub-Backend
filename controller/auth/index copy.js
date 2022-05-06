@@ -180,4 +180,7 @@
 // //     }),
 // // ]
 
+// // router.post('/signup', validateCredentials, signup)
+// // router.post('/login', validateCredentials, login)
+
 // module.exports = { allUsers, signup, login }
