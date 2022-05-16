@@ -9,10 +9,12 @@ const {
 //
 //
 //
-//
-// single image upload
+
+// single image
+// profile upload
 router.post('/profile', upload.single('image'), singleUpload)
 
+// post upload
 router.post('/single', upload.single('image'), singleUpload)
 
 // multiple files upload

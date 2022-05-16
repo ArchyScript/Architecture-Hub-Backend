@@ -15,7 +15,12 @@ const upload = multer({
     storage: fileStorageEngine,
 })
 
-const profilePictureUpload = (req, res) => {
+// all Profile pictures
+const allProfilePictures = (req, res) => {
+    console.log(req.file)
+    res.send('single file uploaded successful: ', res.file)
+}
+const specificProfilePicture = (req, res) => {
     console.log(req.file)
     res.send('single file uploaded successful: ', res.file)
 }
