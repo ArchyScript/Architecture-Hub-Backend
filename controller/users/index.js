@@ -7,12 +7,12 @@ const { userValidation } = require('../../validation/users/index')
 const allUsers = async(req, res) => {
     // console.log('test')
     // res.send('test')
-    // try {
-    //     const users = await User.find()
-    //     res.send(users)
-    // } catch (error) {
-    //     res.send(error)
-    // }
+    try {
+        const users = await User.find()
+        res.send(users)
+    } catch (error) {
+        res.send(error)
+    }
 }
 
 // get specific  user
