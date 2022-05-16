@@ -3,7 +3,7 @@ const { postValidation } = require('../../validation/posts/index')
 
 // Get all posts
 const allPosts = async(req, res) => {
-    // res.send(req.user)
+    // res.send('test')
     // const { user_id } = req.user
     // console.log(user_id)
 
