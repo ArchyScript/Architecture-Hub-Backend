@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        min: 6,
+        min: 4,
         max: 256,
     },
     email: {
@@ -40,6 +40,9 @@ const UserSchema = new mongoose.Schema({
     account_status: {
         type: String,
     },
+    // profile: {
+    //     type: Object
+    // }
 })
 
 module.exports = mongoose.model('Users', UserSchema)

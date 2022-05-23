@@ -1,13 +1,14 @@
 const router = require('express').Router()
-const cloudinary = require('../../utilities/cloudinary')
-const Profile = require('../../models/profile/Profile')
+const { upload } = require('../utilities/multer')
+const cloudinary = require('../utilities/cloudinary')
+const Profile = require('../models/profile/Profile')
 
 // // single file upload
-const addPicture = async(req, res) => {
+router.post('/', upload.single('image'), async(req, res) => {
     try {
         const result = await cloudinary.uploader.upload(req.file.path)
 
-        // res.json('result testing')
+        // res.json(result)
         let userProfile = new Profile({
             name: req.body.name,
             avatar: result.secure_url,
@@ -19,7 +20,7 @@ const addPicture = async(req, res) => {
     } catch (error) {
         console.log(error)
     }
-}
+})
 
 // get all profile
 router.get('/', async(req, res) => {
@@ -45,7 +46,7 @@ router.get('/:id', async(req, res) => {
 })
 
 // update  profile
-router.put('/:id', async(req, res) => {
+router.put('/:id', upload.single('image'), async(req, res) => {
     try {
         let singleProfile = await Profile.findOne({ _id: req.params.id })
 
@@ -88,6 +89,4 @@ router.delete('/:id', async(req, res) => {
     }
 })
 
-module.exports = {
-    addPicture,
-}
+module.exports = router

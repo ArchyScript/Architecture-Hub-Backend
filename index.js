@@ -4,6 +4,7 @@ require('dotenv').config()
 const { connectDatabase } = require('./controller/mongooseConnect')
 const app = express()
 const path = require('path')
+    // const cors = require('cors')
 
 // API port
 const PORT = process.env.PORT || 4000
@@ -34,12 +35,18 @@ const users = require('./routes/users/users')
 const news = require('./routes/news/news')
 const uploads = require('./routes/uploads/index')
 
+// cloudinary test route
+const cloudinary_upload = require('./routes/profile')
+
 // referencing routes
 app.use('/api/auth', auth)
 app.use('/api/posts', Posts)
 app.use('/api/users', users)
 app.use('/api/news', news)
 app.use('/api/uploads', uploads)
+
+// test
+app.use('/api/cloudinary_upload/single', cloudinary_upload)
 
 //
 app.listen(PORT, () => {
