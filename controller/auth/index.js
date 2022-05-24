@@ -1,6 +1,6 @@
 require('dotenv').config()
 const JWT = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+const bcryptjs = require('bcryptjs')
 const Users = require('../../models/users/Users')
 const {
     loginValidation,
@@ -22,7 +22,7 @@ const login = async(req, res) => {
     const { password } = value
 
     // check if password is correct
-    const validPassword = await bcrypt.compare(password, user.password)
+    const validPassword = await bcryptjs.compare(password, user.password)
     if (!validPassword) return res.status(400).send('Invalid credentials')
 
     // const token = await JWT.sign({
@@ -68,8 +68,8 @@ const signup = async(req, res) => {
     const { password, email, username } = value
 
     // Hash password
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
+    const salt = await bcryptjs.genSalt(10)
+    const hashedPassword = await bcryptjs.hash(password, salt)
 
     const newUser = new Users({
         username: username,
