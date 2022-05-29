@@ -1,6 +1,5 @@
 require('dotenv').config()
-    // const JWT = require('jsonwebtoken')
-const bcryptjs = require('bcryptjs')
+const bcrypt = require('bcrypt')
 const User = require('../../models/users/Users')
 const { userValidation } = require('../../validation/users/index')
 

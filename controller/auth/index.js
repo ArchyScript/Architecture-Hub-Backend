@@ -1,12 +1,11 @@
 require('dotenv').config()
-const JWT = require('jsonwebtoken')
-const bcryptjs = require('bcryptjs')
+const bcrypt = require('bcrypt')
+const { assignUserToken } = require('../../middlewares/auth/assignUserToken')
 const Users = require('../../models/users/Users')
 const {
     loginValidation,
     signupValidation,
 } = require('../../validation/auth/index')
-const SECRET_KEY = process.env.jwt_token_secret_key
 
 //
 const login = async(req, res) => {
@@ -22,33 +21,11 @@ const login = async(req, res) => {
     const { password } = value
 
     // check if password is correct
-    const validPassword = await bcryptjs.compare(password, user.password)
+    const validPassword = await bcrypt.compare(password, user.password)
     if (!validPassword) return res.status(400).send('Invalid credentials')
 
-    // const token = await JWT.sign({
-    //         _id: user._id,
-    //     },
-    //     SECRET_KEY, {
-    //         expiresIn: 3900000,
-    //     },
-    // )
-
-    const user_id = user._id
-
-    const token = await JWT.sign({
-            user_id,
-        },
-        SECRET_KEY, {
-            expiresIn: 3900000,
-        },
-    )
-
-    const response = {
-        savedUserId: user._id,
-        token: token,
-    }
-
-    res.header('x-auth-token', token).send(response)
+    // assign token
+    assignUserToken(user._id, res)
 }
 
 const signup = async(req, res) => {
@@ -68,8 +45,8 @@ const signup = async(req, res) => {
     const { password, email, username } = value
 
     // Hash password
-    const salt = await bcryptjs.genSalt(10)
-    const hashedPassword = await bcryptjs.hash(password, salt)
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
 
     const newUser = new Users({
         username: username,
@@ -86,20 +63,8 @@ const signup = async(req, res) => {
         res.send(error)
     }
 
-    const token = await JWT.sign({
-            user_id,
-        },
-        SECRET_KEY, {
-            expiresIn: 3900000,
-        },
-    )
-
-    const response = {
-        user_id: user_id,
-        token: token,
-    }
-
-    res.header('x-auth-token', token).send(response)
+    // assign token
+    assignUserToken(user_id, res)
 }
 
 module.exports = { signup, login }

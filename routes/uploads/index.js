@@ -1,22 +1,19 @@
 const router = require('express').Router()
-const { addPicture } = require('../../controller/uploads/index')
-const { upload } = require('../../utilities/multer')
-    //
-    //
-    //
+const {
+    getAllUsers,
+    getSingleUser,
+    createUserProfile,
+    updateUser,
+    deleteUser,
+} = require('../../controller/uploads/index copy')
+const { upload } = require('../../config/multer')
 
-// single image
-// profile upload
-// router.post('/profile', upload.single('image'), singleUpload)
-
+//
 // post upload
-router.post('/single', upload.single('image'), addPicture)
-
-// multiple files upload
-// router.post(
-//     '/multiple',
-//     upload.array('images', maximum_image_upload),
-//     multipleUploads,
-// )
+router.get('/single', getAllUsers)
+router.get('/single/:id', getSingleUser)
+router.post('/single/', upload.single('image'), createUserProfile)
+router.patch('/single/:id', upload.single('image'), updateUser)
+router.delete('/single/:id', deleteUser)
 
 module.exports = router

@@ -3,6 +3,7 @@ const Joi = require('joi')
 //User-defined function to validate the user
 const postValidation = (postData) => {
     const PostSchema = {
+        user_id: Joi.string().min(4).max(256).required(),
         title: Joi.string().min(4).max(256).required(),
         content: Joi.string().min(10).max(1024).required(),
         no_of_likes: Joi.number().required(),

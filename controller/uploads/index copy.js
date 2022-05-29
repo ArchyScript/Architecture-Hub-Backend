@@ -1,41 +1,108 @@
-// const multer = require('multer')
-// const maximum_image_upload = 4
+const router = require('express').Router()
+const cloudinary = require('../../config/cloudinary')
+const Profile = require('../../models/profile/Profile')
 
-// const fileStorageEngine = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, './uploads')
-//     },
+// get all profile
+const getAllUsers = async(req, res) => {
+    try {
+        const allProfiles = await Profile.find()
+        res.json(allProfiles)
+    } catch (error) {
+        console.log(error)
+    }
+}
 
-//     filename: (req, file, cb) => {
-//         cb(null, `${Date.now()}__${file.originalname}`)
-//     },
+const createUserProfile = async(req, res) => {
+    try {
+        const result = await cloudinary.uploader.upload(req.file.path)
+
+        let userProfile = new Profile({
+            name: req.body.name,
+            avatar: result.secure_url,
+            cloudinary_id: result.public_id,
+        })
+
+        const savedProfile = await userProfile.save()
+        res.json(savedProfile)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const getSingleUser = async(req, res) => {
+    try {
+        let singleProfile = await Profile.findOne({ _id: req.params.id })
+
+        if (!singleProfile) return res.send('No profile found in database')
+
+        res.json(singleProfile)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const updateUser = async(req, res) => {
+    try {
+        let singleProfile = await Profile.findOne({ _id: req.params.id })
+
+        if (!singleProfile) return res.send('No profile found in database')
+            // Remove picture from cloudinary
+            // await cloudinary.uploader.destroy(singleProfile.cloudinary_id)
+            // Upload new picture to cloudinary
+            // Some valiations needed though
+        const result = await cloudinary.uploader.upload(req.file.path)
+            // console.log(result)
+        let data = {
+            name: req.body.name || singleProfile.name,
+            avatar: result.secure_url || singleProfile.avatar,
+            cloudinary_id: result.public_id || singleProfile.cloudinary_id,
+        }
+
+        const updatedProfile = await Profile.findByIdAndUpdate(
+            req.params.id,
+            data, { new: true },
+        )
+
+        res.json(updatedProfile)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const deleteUser = async(req, res) => {
+    try {
+        res.send(req.params.id)
+            // let profileToDelete = await Profile.findOne({ _id: req.params.id })
+
+        // if (!profileToDelete) return res.send('No profile found in database')
+        // await cloudinary.uploader.destroy(profileToDelete.cloudinary_id)
+
+        // await profileToDelete.remove()
+        // res.json(profileToDelete)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// // delete profile picture
+// router.delete('/:id', async(req, res) => {
+// try {
+//     let profileToDelete = await Profile.findOne({ _id: req.params.id })
+
+//     if (!profileToDelete) return res.send('No profile found in database')
+//     await cloudinary.uploader.destroy(profileToDelete.cloudinary_id)
+
+//     await profileToDelete.remove()
+//     res.json(profileToDelete)
+// } catch (error) {
+//     console.log(error)
+// }
 // })
 
-// const upload = multer({
-//     storage: fileStorageEngine,
-// })
-
-// // all Profile pictures
-// const allProfilePictures = (req, res) => {
-//     console.log(req.file)
-//     res.send('single file uploaded successful: ', res.file)
-// }
-// const specificProfilePicture = (req, res) => {
-//     console.log(req.file)
-//     res.send('single file uploaded successful: ', res.file)
-// }
-
-// const singleUpload = (req, res) => {
-//     try {
-//         res.send('single file uploaded successful')
-//     } catch (err) {
-//         res.send(err)
-//     }
-// }
-
-// const multipleUploads = (req, res) => {
-//     console.log(req.files)
-//     res.send('multiple files upload succesfull')
-// }
-
-// module.exports = { singleUpload, multipleUploads, upload, maximum_image_upload }
+module.exports = {
+    getAllUsers,
+    getSingleUser,
+    createUserProfile,
+    updateUser,
+    deleteUser,
+}

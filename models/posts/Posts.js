@@ -22,6 +22,10 @@ const PostSchema = new mongoose.Schema({
     people_engages_in_post: {
         type: Array,
     },
+    user_id: {
+        type: String,
+        required: true,
+    },
     date: {
         type: Date,
         default: Date.now(),

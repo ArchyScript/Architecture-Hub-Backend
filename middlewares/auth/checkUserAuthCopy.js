@@ -18,7 +18,8 @@ const checkUserAuth = async(req, res, next) => {
     try {
         // use JWT to verify the user provided token with the secret key
         const user = await JWT.verify(userToken, SECRET_KEY)
-        req.user = user.email
+
+        // req.user = user.email
         next()
     } catch (error) {
         return res.json({

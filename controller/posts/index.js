@@ -1,11 +1,10 @@
 const Post = require('../../models/posts/Posts')
 const { postValidation } = require('../../validation/posts/index')
+const User = require('../../models/users/Users')
 
 // Get all posts
 const allPosts = async(req, res) => {
-    // res.send('test')
-    // const { user_id } = req.user
-    // console.log(user_id)
+    console.log(res)
 
     try {
         const posts = await Post.find()
@@ -20,15 +19,6 @@ const createPost = async(req, res) => {
     const { value, error } = postValidation(req.body)
     if (error) return res.status(400).send(error.details[0].message)
 
-    // try {
-    //     if (!error) {
-    //         res.send(value)
-    //     } else res.send(error.details[0].message)
-    // } catch (err) {
-    //     res.send(err)
-    // }
-
-    // value === req.body
     const newPost = new Post({
         title: req.body.title,
         content: req.body.content,
@@ -38,10 +28,15 @@ const createPost = async(req, res) => {
     })
 
     try {
-        const savedPost = await newPost.save()
-        res.send(savedPost)
+        const user = await User.findOne({ _id: req.body.user_id })
+        if (!user) return res.status(400).send('Cannot fetch data of invalid user')
+        if (user) return res.status(201).send('User available')
+            // const savedPost = await newPost.save()
+        console.log(newPost._id)
+        console.log(req.body)
+        res.send(newPost)
     } catch (error) {
-        res.send(error)
+        res.send('error:   ' + error)
     }
 }
 

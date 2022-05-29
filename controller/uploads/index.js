@@ -1,13 +1,21 @@
 const router = require('express').Router()
-const cloudinary = require('../../utilities/cloudinary')
+const cloudinary = require('../../config/cloudinary')
 const Profile = require('../../models/profile/Profile')
 
-// // single file upload
-const addPicture = async(req, res) => {
+// get all profile
+const getAllUsers = async(req, res) => {
+    try {
+        const allProfiles = await Profile.find()
+        res.json(allProfiles)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const createUserProfile = async(req, res) => {
     try {
         const result = await cloudinary.uploader.upload(req.file.path)
 
-        // res.json('result testing')
         let userProfile = new Profile({
             name: req.body.name,
             avatar: result.secure_url,
@@ -21,18 +29,7 @@ const addPicture = async(req, res) => {
     }
 }
 
-// get all profile
-router.get('/', async(req, res) => {
-    try {
-        const allProfiles = await Profile.find()
-        res.json(allProfiles)
-    } catch (error) {
-        console.log(error)
-    }
-})
-
-// get single profile
-router.get('/:id', async(req, res) => {
+const getSingleUser = async(req, res) => {
     try {
         let singleProfile = await Profile.findOne({ _id: req.params.id })
 
@@ -42,10 +39,9 @@ router.get('/:id', async(req, res) => {
     } catch (error) {
         console.log(error)
     }
-})
+}
 
-// update  profile
-router.put('/:id', async(req, res) => {
+const updateUser = async(req, res) => {
     try {
         let singleProfile = await Profile.findOne({ _id: req.params.id })
 
@@ -71,23 +67,27 @@ router.put('/:id', async(req, res) => {
     } catch (error) {
         console.log(error)
     }
-})
+}
 
-// delete profile picture
-router.delete('/:id', async(req, res) => {
+const deleteUser = async(req, res) => {
     try {
-        let profileToDelete = await Profile.findOne({ _id: req.params.id })
+        res.send(req.params.id)
+            // let profileToDelete = await Profile.findOne({ _id: req.params.id })
 
-        if (!profileToDelete) return res.send('No profile found in database')
-        await cloudinary.uploader.destroy(profileToDelete.cloudinary_id)
+        // if (!profileToDelete) return res.send('No profile found in database')
+        // await cloudinary.uploader.destroy(profileToDelete.cloudinary_id)
 
-        await profileToDelete.remove()
-        res.json(profileToDelete)
+        // await profileToDelete.remove()
+        // res.json(profileToDelete)
     } catch (error) {
         console.log(error)
     }
-})
+}
 
 module.exports = {
-    addPicture,
+    getAllUsers,
+    getSingleUser,
+    createUserProfile,
+    updateUser,
+    deleteUser,
 }

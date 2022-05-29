@@ -2,7 +2,7 @@ const JWT = require('jsonwebtoken')
 require('dotenv').config()
 const SECRET_KEY = process.env.jwt_token_secret_key
 
-const checkUserAuth = async(req, res, next) => {
+const verifyUserToken = async(req, res, next) => {
     const userToken = await req.header('x-auth-token')
 
     // Checks if a token is found in the header
@@ -21,4 +21,4 @@ const checkUserAuth = async(req, res, next) => {
     }
 }
 
-module.exports = { checkUserAuth }
+module.exports = { verifyUserToken }

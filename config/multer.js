@@ -1,17 +1,4 @@
 const multer = require('multer')
-const path = require('path')
-
-// const fileStorageEngine = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, './uploads')
-//     },
-//     filename: (req, file, cb) => {
-//         cb(
-//             null,
-//             `${new Date().toISOString().replace(/:/g, '-')}__${file.originalname}`,
-//         )
-//     },
-// })
 
 const fileStorageEngine = multer.diskStorage({})
 const fileFilter = (req, file, cb) => {
@@ -22,7 +9,6 @@ const fileFilter = (req, file, cb) => {
     ) {
         cb(null, true)
     } else {
-        // cb(null, true)
         return cb(new Error('file type not supported'), false)
     }
 }

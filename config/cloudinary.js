@@ -9,8 +9,3 @@ cloudinary.config({
 })
 
 module.exports = cloudinary
-
-// CLOUD_NAME="yungscript"
-// API_KEY="679758917131596"
-// API_SECRET="aTU81d3j4DCro9vwKQB97LQSx5U"
-// CLOUDINARY_URL=cloudinary://679758917131596:aTU81d3j4DCro9vwKQB97LQSx5U@yungscript
