@@ -3,7 +3,7 @@ const express = require('express')
 const router = express.Router()
     //
 const ProductTest = require('../models/ProductTest.js')
-const Post = require('../models/posts/Posts')
+    // const Post = require('../models/posts/Posts')
 
 // Routes
 // returns all products
@@ -42,9 +42,29 @@ router.post('/', async(req, res) => {
 // get specific post
 router.get('/:product_id', async(req, res) => {
     const singleProduct = await ProductTest.findById(req.params.product_id)
+    if (!singleProduct)
+        return res.status(400).send('Cannot fetch data of invalid product')
 
     try {
-        res.json(singleProduct)
+        res.send(singleProduct)
+    } catch (error) {
+        res.json(error)
+    }
+})
+
+// get specific post
+router.put('/:product_id', async(req, res) => {
+    // const updatedProduct = await ProductTest.findById(req.params.product_id)
+    // if (!updatedProduct)
+    //     return res.status(400).send('Cannot fetch data of invalid product')
+
+    try {
+        const updatedProduct = await ProductTest.updateOne({ _id: req.body.post_Id }, {
+            $set: {
+                name: req.body.name,
+            },
+        }, )
+        res.send(updatedProduct)
     } catch (error) {
         res.json(error)
     }

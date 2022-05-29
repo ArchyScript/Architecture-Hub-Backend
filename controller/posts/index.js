@@ -1,6 +1,7 @@
 const Post = require('../../models/posts/Posts')
 const { postValidation } = require('../../validation/posts/index')
 const User = require('../../models/users/Users')
+const ProductTest = require('../../models/ProductTest.js')
 
 // Get all posts
 const allPosts = async(req, res) => {
@@ -28,15 +29,31 @@ const createPost = async(req, res) => {
     })
 
     try {
-        const user = await User.findOne({ _id: req.body.user_id })
-        if (!user) return res.status(400).send('Cannot fetch data of invalid user')
-        if (user) return res.status(201).send('User available')
-            // const savedPost = await newPost.save()
-        console.log(newPost._id)
-        console.log(req.body)
-        res.send(newPost)
+        // if (!productTest)
+        //     return res.status(400).send('Cannot fetch data of invalid product')
+        // const productTest = await ProductTest.findOne({ _id: req.body.user_id })
+
+        const updatedPost = await ProductTest.updateOne({ _id: req.body.post_Id }, {
+            $set: {
+                name: 'req.body.title',
+            },
+        }, )
+
+        if (!updatedPost.acknowledged) {
+            return res.send('tetst')
+        }
+        const productTest = await ProductTest.findOne({ _id: req.body.user_id })
+        res.send(productTest)
+
+        // if (user) return res.status(201).send('User available')
+        // const savedPost = await newPost.save()
+        // console.log(newPost._id)
+        // console.log(req.body)
+        // const allProducts = await ProductTest.find()
+
+        // res.send(allProducts)
     } catch (error) {
-        res.send('error:   ' + error)
+        res.send(error)
     }
 }
 

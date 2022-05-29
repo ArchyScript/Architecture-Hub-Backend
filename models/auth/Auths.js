@@ -8,16 +8,20 @@ const AuthSchema = new mongoose.Schema({
         min: 6,
         max: 256,
     },
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+        min: 4,
+        max: 256,
+    },
     password: {
         type: String,
         required: true,
+        unique: true,
         min: 6,
         max: 1024,
     },
-    date: {
-        type: Date,
-        default: Date.now(),
-    },
-})
+}, { timestamps: true }, )
 
 module.exports = mongoose.model('Auths', AuthSchema)

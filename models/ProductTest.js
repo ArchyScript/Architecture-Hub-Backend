@@ -135,6 +135,10 @@ const RelatedPostSchema = new Schema({
         type: String,
         required: [true, `post_id is required`],
     },
+    user_id: {
+        type: String,
+        required: [true, `user_is is required`],
+    },
 }, {
     _id: false,
 }, )

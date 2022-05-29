@@ -5,6 +5,7 @@ const loginValidation = (data) => {
     const LoginSchema = {
         email: Joi.string().min(6).max(256).required().email(),
         password: Joi.string().min(6).max(1024).required(),
+        // login_method: Joi.string().min(6).max(1024).default('email'),
     }
 
     const JoiSchema = Joi.object(LoginSchema)
