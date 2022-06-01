@@ -1,5 +1,5 @@
 require('dotenv').config()
-const Users = require('../../models/users/Users')
+const Users = require('../../models/users/Users.js')
 const Auths = require('../../models/auth/Auths')
 
 const { userValidation } = require('../../validation/users/index')
