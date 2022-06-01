@@ -1,7 +1,7 @@
 require('dotenv').config()
 const bcrypt = require('bcrypt')
 const Users = require('../../models/users/Users')
-const Auths = require('../../models/auth/Auths')
+const Auth = require('../../models/users/Users')
 
 //
 const {
@@ -10,16 +10,6 @@ const {
 } = require('../../validation/auth/index')
 const { assignUserToken } = require('../../middlewares/auth/assignUserToken')
 
-// Get all comments
-const allAuthUsers = async(req, res) => {
-    try {
-        const authUsers = await Auths.find()
-        res.send(authUsers)
-    } catch (error) {
-        res.send(error)
-    }
-}
-
 //
 const login = async(req, res) => {
     // validate user
@@ -27,7 +17,7 @@ const login = async(req, res) => {
     if (error) return res.status(400).send(error.details[0].message)
 
     // check if user with that email exist in database
-    const user = await Auths.findOne({ email: value.email })
+    const user = await Auth.findOne({ email: value.email })
     if (!user) return res.status(400).send('Invalid credentials')
 
     // destructure req.body
@@ -47,11 +37,14 @@ const signup = async(req, res) => {
         if (error) return res.status(400).send(error.details[0].message)
 
         // check if user email is in database
-        const emailExist = await Auths.findOne({ email: value.email })
+        // const emailExist = await Auth.findOne({ email: req.body.email })
+        const emailExist = await Auth.findOne({ email: value.email })
+            // const emailExist = await Users.findOne({ email: value.email })
         if (emailExist) return res.status(400).send('Email already exist')
 
         // check if username has been taken
-        const usernameExist = await Auths.findOne({ username: value.username })
+        const usernameExist = await Auth.findOne({ username: value.username })
+            // const usernameExist = await Users.findOne({ username: value.username })
         if (usernameExist) return res.status(400).send('Username is not available')
 
         // value === req.body
@@ -61,7 +54,7 @@ const signup = async(req, res) => {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
 
-        const newAuthUser = new Auths({
+        const newAuthUser = new Auth({
             username: username,
             email: email,
             password: hashedPassword,
@@ -95,7 +88,7 @@ const resetPassword = async(req, res) => {
     if (error) return res.status(400).send(error.details[0].message)
 
     // check if user with that email exist in database
-    const user = await Auths.findOne({ email: value.email })
+    const user = await Auth.findOne({ email: value.email })
     if (!user) return res.status(400).send('Invalid credentials email/username')
 
     // destructure req.body
@@ -111,7 +104,7 @@ const resetPassword = async(req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt)
         // console.log(hashedPassword)
 
-    const updatedPost = await Auths.updateOne({ _id: user._id }, {
+    const updatedPost = await Auth.updateOne({ _id: user._id }, {
         $set: {
             password: hashedPassword,
         },
@@ -123,11 +116,16 @@ const resetPassword = async(req, res) => {
 
 //
 const logout = async(req, res) => {
+    // check if password is correct
+    // const validPassword = await bcrypt.compare(password, user.password)
+    // if (!validPassword) return res.status(400).send('Invalid credentials')
+
     // assign token
     assignUserToken('', res, true)
+        // res.send('ljf;;')
 }
 
-module.exports = { signup, login, resetPassword, logout, allAuthUsers }
+module.exports = { signup, login, resetPassword, logout }
 
 /* "profile_picture": {
         "title": "Test image name",

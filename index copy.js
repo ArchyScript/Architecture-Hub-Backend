@@ -3,6 +3,7 @@ require('dotenv').config()
 const { connectDatabase } = require('./config/mongooseConnect')
 const app = express()
 const path = require('path')
+const cors = require('cors')
 
 // API port
 const PORT = process.env.PORT || 4000
@@ -12,7 +13,7 @@ connectDatabase()
 
 // Allows express use req.body on the routes
 app.use(express.json())
-    // app.use(cors)
+    // app.use(cors())
 
 // Homme page
 app.use('/', express.static(path.join(__dirname, 'static')))

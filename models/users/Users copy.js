@@ -1,6 +1,32 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+
+const AuthSchema = new mongoose.Schema({
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        min: 6,
+        max: 256,
+    },
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+        min: 4,
+        max: 256,
+    },
+    password: {
+        type: String,
+        required: true,
+        unique: true,
+        min: 6,
+        max: 1024,
+    },
+}, { timestamps: true }, )
+
+
 /* 
 name {
     firstname, lastname
@@ -16,17 +42,15 @@ personalities
 const bio = new Schema({
     firstname: {
         type: String,
-        default: '',
+        required: [true, 'firstname is required'],
     },
 
     lastname: {
         type: String,
-        default: '',
     },
 
     gender: {
         type: String,
-        default: '',
     },
     date_of_birth: {
         type: Date,
@@ -39,42 +63,37 @@ const bio = new Schema({
 const profile_picture = new Schema({
     title: {
         type: String,
-        default: '',
     },
     cloudinary_id: {
         type: String,
-        default: '',
     },
     avatar: {
         type: String,
-        default: '',
     },
 }, {
     _id: false,
 }, )
 
-const posts = new Schema({
-    post_id: {
-        type: String,
-        default: '',
-    },
-}, {
-    _id: false,
-}, )
-
-//
 const UserSchema = new Schema({
     user_id: {
         type: String,
         required: [true, 'user_id is required'],
     },
+    eventsAttended: [{ type: Schema.Types.ObjectId, ref: 'Auth' }],
+    // profile_picture: {
+    //     // type: Schema.Types.ObjectId,
+    //     // ref: 'profile_picture',
+    //     // default: null,
+    // },
+    // profile_picture: { type: { profile_picture }, default: null },
     profile_picture: profile_picture,
     bio: bio,
-    posts: [posts],
     is_active: {
         type: Boolean,
         default: false,
     },
 })
 
+
+module.exports = mongoose.model('Auth', AuthSchema)
 module.exports = mongoose.model('Users', UserSchema)

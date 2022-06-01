@@ -53,7 +53,7 @@ router.get('/:product_id', async(req, res) => {
 })
 
 // get specific post
-router.put('/:product_id', async(req, res) => {
+router.patch('/:product_id', async(req, res) => {
     // const updatedProduct = await ProductTest.findById(req.params.product_id)
     // if (!updatedProduct)
     //     return res.status(400).send('Cannot fetch data of invalid product')

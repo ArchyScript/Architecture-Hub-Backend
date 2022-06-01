@@ -5,13 +5,13 @@ const {
     login,
     resetPassword,
     logout,
-} = require('../../controller/auth/index.js')
+    allAuthUsers,
+} = require('../../controller/auth/index')
 
+router.get('/auth-users', allAuthUsers)
 router.post('/signup', signup)
+router.post('/reset-password', resetPassword)
 router.post('/login', login)
 router.post('/logout', logout)
-router.post('/reset-password', resetPassword)
-
-// router.post('/logout', login)
 
 module.exports = router

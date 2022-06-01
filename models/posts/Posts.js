@@ -1,6 +1,33 @@
 const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-const PostSchema = new mongoose.Schema({
+const comments = new Schema({
+    comment_id: {
+        type: String,
+        required: [true, 'comment_id is required'],
+    },
+    // commenter_id: {
+    //     type: String,
+    //     required: [true, 'commenter_id is required'],
+    // },
+}, {
+    _id: false,
+}, )
+
+const likes = new Schema({
+    like_id: {
+        type: String,
+        required: [true, 'like_id is required'],
+    },
+    // likee_id: {
+    //     type: String,
+    //     required: [true, 'likee_id is required'],
+    // },
+}, {
+    _id: false,
+}, )
+
+const PostSchema = new Schema({
     title: {
         type: String,
         required: true,
@@ -9,27 +36,16 @@ const PostSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    no_of_likes: {
-        type: Number,
-        required: true,
-        default: 0,
-    },
-    no_of_comments: {
-        type: Number,
-        required: true,
-        default: 0,
-    },
-    people_engages_in_post: {
-        type: Array,
+    edited: {
+        type: Boolean,
+        default: false,
     },
     user_id: {
         type: String,
         required: true,
     },
-    date: {
-        type: Date,
-        default: Date.now(),
-    },
-})
+    comments: [comments],
+    likes: [likes],
+}, { timestamps: true }, )
 
 module.exports = mongoose.model('Posts', PostSchema)
