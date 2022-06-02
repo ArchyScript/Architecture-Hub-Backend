@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const cloudinary = require('../../config/cloudinary')
-const Profile = require('../../models/profile/Profile')
+const Profile = require('../../models/profile/profile')
 
 // get all profile
 const getAllUsers = async(req, res) => {

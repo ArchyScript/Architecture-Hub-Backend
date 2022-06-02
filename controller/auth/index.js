@@ -1,7 +1,7 @@
 require('dotenv').config()
 const bcrypt = require('bcrypt')
-const Users = require('../../models/users/Users')
-const Auths = require('../../models/auth/Auths')
+const Users = require('../../models/users/users')
+const Auths = require('../../models/auth/auths')
 
 //
 const {
