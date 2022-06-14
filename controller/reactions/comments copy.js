@@ -19,6 +19,59 @@ const allComments = async (req, res) => {
   }
 }
 
+// Create new comment
+const createComment = async (req, res) => {
+  const { commenter_id, post_id } = req.params
+
+  try {
+    // validate request send by user
+    const { value, error } = commentValidation(req.body)
+    if (error) return res.status(400).send(error.details[0].message)
+
+    // check if commenter exist in database
+    const commenter = await Auths.findOne({ _id: commenter_id })
+    if (!commenter)
+      return res.status(400).send('Cannot fetch data of invalid user')
+
+    // Find the post  in the Posts collection by the id gotten from the user
+    const postToBeCommentedOn = await Posts.findOne({ _id: post_id })
+    if (!postToBeCommentedOn)
+      return res.status(400).send('Cannot fetch post at the moment')
+
+    // create new comment
+    const newComment = new Comments({
+      comment: value.comment,
+      post_id,
+      commenter_id,
+    })
+
+    try {
+      const savedComment = await newComment.save()
+
+      // get the id of the newly added comment
+      const newCommentObjectId = {
+        comment_id: savedComment._id,
+      }
+
+      const updatePostsCommentsArray = await Posts.updateOne(
+        { user_id: commenter_id },
+        {
+          $set: {
+            // use the spread operator to add new comment to existing coomments in the post
+            comments: [newCommentObjectId],
+          },
+        },
+      )
+
+      res.send(updatePostsCommentsArray)
+    } catch (error) {
+      res.send(error)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 // get single comment
 const singleComment = async (req, res) => {
   const comment_id = req.params.comment_id
@@ -30,77 +83,6 @@ const singleComment = async (req, res) => {
     res.send(singleComment)
   } catch (error) {
     res.send(error)
-  }
-}
-
-// Create new comment
-const createComment = async (req, res) => {
-  const { commenter_id, post_id } = req.params
-  console.log(req.params)
-
-  try {
-    // validate request send by user
-    const { value, error } = commentValidation(req.body)
-    if (error) return res.status(400).send(error.details[0].message)
-
-    // check if commenter exist in database
-    const commenter = await Auths.findById({ _id: commenter_id })
-    if (!commenter)
-      return res.status(400).send('Cannot fetch data of invalid user')
-
-    // Find the post  in the Posts collection by the id gotten from the user
-    const postToBeCommentedOn = await Posts.findById({ _id: post_id })
-    if (!postToBeCommentedOn)
-      return res.status(400).send('Cannot fetch post at the moment')
-
-    // create new comment
-    const newComment = new Comments({
-      comment: value.comment,
-      commenter_id,
-      edited: false,
-      post_id,
-    })
-
-    try {
-      const savedComment = await newComment.save()
-
-      const newCommentObjectId = {
-        comment_id: savedComment._id,
-      }
-
-      if (postToBeCommentedOn.comments.length >= 1) {
-        console.log('has previous comment')
-        // const updatePostsCommentsArray =
-        await Posts.updateOne(
-          { _id: post_id },
-          {
-            $set: {
-              // use the spread operator to add new comment to existing coomments in the post
-              comments: [...postToBeCommentedOn.comments, newCommentObjectId],
-            },
-          },
-        )
-      } else {
-        console.log('new comment')
-        // const updatePostsCommentsArray =
-        await Posts.updateOne(
-          { _id: post_id },
-          {
-            $set: {
-              // use the spread operator to add new comment to existing coomments in the post
-              comments: [newCommentObjectId],
-            },
-          },
-        )
-      }
-
-      console.log('test')
-      res.send(postToBeCommentedOn)
-    } catch (error) {
-      res.send(error)
-    }
-  } catch (error) {
-    console.log(error)
   }
 }
 
@@ -152,46 +134,45 @@ const updateComment = async (req, res) => {
 
 // delete post
 const deleteComment = async (req, res) => {
-  const { commenter_id, comment_id } = req.params
+  const { commenter_id, post_id } = req.params
 
-  // check if commenter exist in database
-  const commenter = await Auths.findById({ _id: commenter_id })
-  if (!commenter)
-    return res.status(400).send('Cannot fetch data of invalid user')
+  // check if user id matches with the "commenter_id" in the database
+  const user = await Auths.findOne({ commenter_id })
+  if (!user) return res.status(400).send('Cannot fetch data of invalid user')
+  // Checks if user have any post in their name
+  if (user.posts.length < 1)
+    return res.status(400).send('User have no post to delete')
 
-  const commentToBeDeleted = await Comments.findById({ _id: comment_id })
-  if (!commentToBeDeleted)
-    return res.status(400).send('No comments with this id')
+  // Checks if user created this post
+  const filteredPost = user.posts.find((post) => post.post_id == post_id)
+  if (!filteredPost)
+    return res.status(400).send('User did not create this post')
 
-  if (commentToBeDeleted.commenter_id !== commenter_id)
-    return res.status(400).send(`User can't delete comment they didin't create`)
+  // filter out the deleted post and kep the remaing post(s) available
+  const otherPosts = user.posts.filter((post) => post !== filteredPost)
 
-  const { post_id } = commentToBeDeleted
-
-  const commentPost = await Posts.findById({ _id: post_id })
-  if (!commentPost)
-    return res.status(400).send('No post available post with this id')
+  // Find the post  in the Comments collection by the id gotten from the user
+  // const postToBeDeleted = await Comments.findOne({ _id: filteredPost.post_id })
+  // if (!postToBeDeleted)
+  //     return res
+  //         .status(400)
+  //         .send('Cannot fetch post from collection at the moment')
 
   try {
-    // Delete comment from Comments collection
+    // Delete post from Comments collection
     await Comments.deleteOne({ _id: post_id })
 
-    // filter out the deleted comment and kep the remaing comment(s) available
-    const otherComments = commentPost.comments.filter(
-      (comment) => comment.comment_id !== comment_id,
-    )
-
     // update user posts array
-    await Posts.updateOne(
-      { _id: post_id },
+    await Auths.updateOne(
+      { commenter_id },
       {
         $set: {
-          comments: otherComments,
+          posts: otherPosts,
         },
       },
     )
 
-    res.send('comment successfully deleted')
+    res.send('Comments successfully deleted')
   } catch (error) {
     res.send(error)
   }
