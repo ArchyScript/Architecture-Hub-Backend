@@ -36,7 +36,6 @@ const singleComment = async (req, res) => {
 // Create new comment
 const createComment = async (req, res) => {
   const { commenter_id, post_id } = req.params
-  console.log(req.params)
 
   try {
     // validate request send by user
@@ -69,8 +68,6 @@ const createComment = async (req, res) => {
       }
 
       if (postToBeCommentedOn.comments.length >= 1) {
-        console.log('has previous comment')
-        // const updatePostsCommentsArray =
         await Posts.updateOne(
           { _id: post_id },
           {
@@ -81,8 +78,6 @@ const createComment = async (req, res) => {
           },
         )
       } else {
-        console.log('new comment')
-        // const updatePostsCommentsArray =
         await Posts.updateOne(
           { _id: post_id },
           {
@@ -94,13 +89,12 @@ const createComment = async (req, res) => {
         )
       }
 
-      console.log('test')
       res.send(postToBeCommentedOn)
     } catch (error) {
       res.send(error)
     }
   } catch (error) {
-    console.log(error)
+    res.send(error)
   }
 }
 

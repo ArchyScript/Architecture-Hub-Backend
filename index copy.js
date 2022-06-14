@@ -13,15 +13,15 @@ connectDatabase()
 
 // Allows express use req.body on the routes
 app.use(express.json())
-    // app.use(cors())
+app.use(cors())
 
 // Homme page
 app.use('/', express.static(path.join(__dirname, 'static')))
-    // app.get('/', (req, res) => {
-    //     return res.send(`Welcome to the Home route ... check the following routes
-    //     /api/posts ... /api/news ... /api/users ... /api/auth/*
-    //     `)
-    // })
+// app.get('/', (req, res) => {
+//     return res.send(`Welcome to the Home route ... check the following routes
+//     /api/posts ... /api/news ... /api/users ... /api/auth/*
+//     `)
+// })
 
 // if (process.env.NODE_ENV === "production") {
 
@@ -49,5 +49,5 @@ app.use('/api/uploads', uploads)
 
 //
 app.listen(PORT, () => {
-    console.log(`Architecture Hub backend is running on port ${PORT}`)
+  console.log(`Architecture Hub backend is running on port ${PORT}`)
 })

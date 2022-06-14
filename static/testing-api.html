@@ -19,7 +19,7 @@
         <h1 class="">Welcome to Architecture Hub</h1>
 
         <div class="">
-            <input type="button" class="btn" value="Get All Posts" onclick="getAllPosts()" />
+            <input type="button" id="signup_btn" class="btn" value="Get All Posts" onclick="getAllPosts()" />
         </div>
 
         <img src="" alt="" />
@@ -36,24 +36,31 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     // const form = document.getElementById('reg-form')
-    // const signup_btn = document.getElementById('signup_btn')
+    const signup_btn = document.getElementById('signup_btn')
 
     // form.addEventListener('submit', resgisterUser)
     // console.log(fetch())
 
     async function getAllPosts() {
-        const result = await fetch('http://localhost:4000/api/users')
-            .then((res) => {
-                return res
-            })
-            .then((data) => {
-                return data
-            })
+        console.log('send request')
+        try {
+            const result = await fetch('http://localhost:4000/api/users')
+                .then((res) => {
+                    signup_btn.innerText = 'data fetching in progess'
+                    return res
+                })
+                .then((data) => {
+                    signup_btn.innerText = 'data fetched'
+                    return data
+                })
+        } catch (error) {
+            console.log(error)
+        }
 
         console.log(result)
 
         // const options = {
-        //     url: 'http://localhost:5000/api/users',
+        //     url: 'http://localhost:4000/api/users',
         //     method: 'GET',
         //     headers: {
         //         Accept: 'application/json',

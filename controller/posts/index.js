@@ -15,7 +15,7 @@ const allPosts = async (req, res) => {
 // Create new post
 const createPost = async (req, res) => {
   // get user_id from the parameter passed in as a request
-  const user_id = req.params.user_id
+  const { user_id } = req.params
 
   // check if user id matches with the "user_id" in the database that was gotten from the auth datbase
   const user = await Users.findOne({ user_id: user_id })
@@ -66,7 +66,6 @@ const singlePost = async (req, res) => {
         .status(400)
         .send('No post has been created yet, create your first post')
 
-    console.log(singlePost)
     res.send(singlePost)
   } catch (error) {
     res.send(error)

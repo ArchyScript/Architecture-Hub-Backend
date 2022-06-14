@@ -68,7 +68,7 @@ const createComment = async (req, res) => {
       res.send(error)
     }
   } catch (error) {
-    console.log(error)
+    res.send(error)
   }
 }
 

@@ -8,7 +8,7 @@ const CommentSchema = new mongoose.Schema(
     },
     edited: {
       type: Boolean,
-      required: false,
+      // required: false,
     },
     commenter_id: {
       type: String,

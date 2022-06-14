@@ -58,8 +58,7 @@ const specificUser = async (req, res) => {
 //         // res.send(productTest)
 //         // if (user) return res.status(201).send('Users available')
 //         // const savedPost = await newUser.save()
-//         // console.log(newUser._id)
-//         // console.log(req.body)
+//
 //         // const allProducts = await ProductTest.find()
 //         // res.send(allProducts)
 //     } catch (error) {

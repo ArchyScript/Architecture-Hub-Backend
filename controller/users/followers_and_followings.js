@@ -4,8 +4,6 @@ const Users = require('../../models/users/users.js')
 // Get all followers
 const allFollowers = async (req, res) => {
   const { user_id } = req.params
-  // console.log(user_id)
-
   try {
     // check if user id matches with the "user_id" in the database that was gotten from the auth datbase
     const user = await Users.findOne({ user_id })
@@ -20,7 +18,6 @@ const allFollowers = async (req, res) => {
 // Get all followers
 const allFollowings = async (req, res) => {
   const { user_id } = req.params
-  // console.log(user_id)
 
   try {
     // check if user id matches with the "user_id" in the database that was gotten from the auth datbase
@@ -204,8 +201,6 @@ const unfollow = async (req, res) => {
           current_user_followings.following_id !== another_user_id
         },
       )
-
-      console.log(updated_current_user_followings)
     }
 
     // filter out the current user in the another user followers
@@ -215,8 +210,6 @@ const unfollow = async (req, res) => {
           another_user_follower.follower_id !== current_user_id
         },
       )
-
-      console.log(updated_another_user_followers)
     }
 
     // update current user followings

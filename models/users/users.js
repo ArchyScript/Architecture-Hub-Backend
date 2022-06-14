@@ -28,10 +28,10 @@ const bio = new Schema(
     gender: {
       type: String,
       default: '',
+      // enum: ['male', 'female'],
     },
     date_of_birth: {
       type: Date,
-      default: Date.now(),
     },
   },
   {

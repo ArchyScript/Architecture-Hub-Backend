@@ -3,7 +3,6 @@ const Users = require('../../models/users/users.js')
 // Get all followers
 const allFollowers = async (req, res) => {
   const { user_id } = req.params
-  // console.log(user_id)
 
   try {
     // check if user id matches with the "user_id" in the database that was gotten from the auth datbase
@@ -19,7 +18,6 @@ const allFollowers = async (req, res) => {
 // Get all followers
 const allFollowings = async (req, res) => {
   const { user_id } = req.params
-  // console.log(user_id)
 
   try {
     // check if user id matches with the "user_id" in the database that was gotten from the auth datbase
@@ -111,7 +109,6 @@ const follow = async (req, res) => {
 const unfollow = async (req, res) => {
   // follower_id is for the follower that wants to unfollow a user
   const { user_id, follower_id } = req.params
-  // console.log(user_id)
 
   // check if user and follower is the same
   if (user_id === follower_id)

@@ -33,7 +33,6 @@ const singleLike = async (req, res) => {
 // Create new like
 const createLike = async (req, res) => {
   const { liker_id, post_id } = req.params
-  console.log(req.params)
 
   try {
     // validate request send by user
@@ -64,7 +63,6 @@ const createLike = async (req, res) => {
       }
 
       if (postToBeLiked.likes.length >= 1) {
-        console.log('has previous like')
         await Posts.updateOne(
           { _id: post_id },
           {
@@ -75,7 +73,6 @@ const createLike = async (req, res) => {
           },
         )
       } else {
-        console.log('new like')
         await Posts.updateOne(
           { _id: post_id },
           {
@@ -87,13 +84,12 @@ const createLike = async (req, res) => {
         )
       }
 
-      console.log('test')
       res.send(postToBeLiked)
     } catch (error) {
       res.send(error)
     }
   } catch (error) {
-    console.log(error)
+    res.send(error)
   }
 }
 

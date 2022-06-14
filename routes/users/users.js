@@ -22,7 +22,11 @@ router.patch('/:user_id', updateUserAccount)
 router.delete('/:user_id', deleteUserAccount)
 
 // Profile Picture uploaad
-router.post('/profile/:user_id', upload.single('image'), uploadProfilePicture)
+router.post(
+  '/profile/:user_id',
+  upload.single('profile-picture'),
+  uploadProfilePicture,
+)
 
 // followers
 router.get('/followers/:user_id', allFollowers)
