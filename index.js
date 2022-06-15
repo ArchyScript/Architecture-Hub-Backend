@@ -5,7 +5,10 @@ const app = express()
 const path = require('path')
 const cors = require('cors')
 const mongoose = require('mongoose')
-require('dotenv').config()
+
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 // API port
 const PORT = process.env.PORT || 4000
