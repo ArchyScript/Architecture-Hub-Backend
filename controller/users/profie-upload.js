@@ -1,4 +1,4 @@
-const Users = require('../../models/users/users')
+const Users = require('../../models/users/Users')
 const cloudinary = require('../../config/cloudinary')
 
 // update user account

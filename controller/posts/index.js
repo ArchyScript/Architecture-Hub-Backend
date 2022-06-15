@@ -1,6 +1,6 @@
-const Posts = require('../../models/posts/posts')
+const Posts = require('../../models/posts/Posts')
 const { postValidation } = require('../../validation/posts')
-const Users = require('../../models/users/users')
+const Users = require('../../models/users/Users')
 
 // Get all posts
 const allPosts = async (req, res) => {

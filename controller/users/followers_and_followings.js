@@ -1,5 +1,5 @@
 const { ContextBuilder } = require('express-validator/src/context-builder')
-const Users = require('../../models/users/users.js')
+const Users = require('../../models/users/Users.js')
 
 // Get all followers
 const allFollowers = async (req, res) => {

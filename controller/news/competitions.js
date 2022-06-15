@@ -1,4 +1,4 @@
-const Competitions = require('../../models/news/competitions')
+const Competitions = require('../../models/news/Competitions')
 const { competitionValidation } = require('../../validation/news/competitions')
 
 // Get all competitions

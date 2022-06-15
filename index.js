@@ -28,7 +28,7 @@ app.use(cors())
 app.use('/', express.static(path.join(__dirname, 'static')))
 
 // routes
-const auth = require('./routes/auth/authsdjgl')
+const auth = require('./routes/auth/auths')
 const Posts = require('./routes/posts/posts')
 const users = require('./routes/users/users')
 const news = require('./routes/news/news')

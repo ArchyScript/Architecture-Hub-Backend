@@ -1,6 +1,6 @@
-const Auths = require('../../models/auth/auths')
-const { Comments } = require('../../models/reactions/reactions.js')
-const Posts = require('../../models/posts/posts')
+const Auths = require('../../models/auth/Auths')
+const { Comments } = require('../../models/reactions/Reactions.js')
+const Posts = require('../../models/posts/Posts')
 
 const { commentValidation } = require('../../validation/reactions/index')
 

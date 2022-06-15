@@ -1,6 +1,6 @@
-const Auths = require('../../models/auth/auths')
-const { Likes } = require('../../models/reactions/reactions.js')
-const Posts = require('../../models/posts/posts')
+const Auths = require('../../models/auth/Auths')
+const { Likes } = require('../../models/reactions/Reactions.js')
+const Posts = require('../../models/posts/Posts')
 const { likeValidation } = require('../../validation/reactions/index')
 
 // Get all likes

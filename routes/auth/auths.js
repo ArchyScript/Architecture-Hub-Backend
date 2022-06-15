@@ -6,7 +6,7 @@ const {
     resetPassword,
     logout,
     allAuthUsers,
-} = require('../../controller/Authssd/index')
+} = require('../../controller/auth/index')
 
 router.get('/auth-users', allAuthUsers)
 router.post('/signup', signup)

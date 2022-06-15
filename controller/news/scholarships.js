@@ -1,4 +1,4 @@
-const Scholarships = require('../../models/news/scholarships')
+const Scholarships = require('../../models/news/Scholarships')
 const { scholarshipValidation } = require('../../validation/news/scholarship')
 
 // Get all scholarships
