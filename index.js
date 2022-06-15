@@ -1,13 +1,12 @@
 const express = require('express')
-require('dotenv').config()
 // const { connectDatabase } = require('./config/mongooseConnect')
 const app = express()
 const path = require('path')
 const cors = require('cors')
 const mongoose = require('mongoose')
 
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
 }
 
 // API port
@@ -29,7 +28,7 @@ app.use(cors())
 app.use('/', express.static(path.join(__dirname, 'static')))
 
 // routes
-const auth = require('./routes/auth/auth')
+const auth = require('./routes/auth/authsdjgl')
 const Posts = require('./routes/posts/posts')
 const users = require('./routes/users/users')
 const news = require('./routes/news/news')
