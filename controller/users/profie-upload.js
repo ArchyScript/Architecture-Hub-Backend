@@ -36,7 +36,7 @@ const uploadProfilePicture = async (req, res) => {
       },
     )
 
-    res.send(updatedUser)
+    res.send('Profile picture successfully uploaded')
   } catch (error) {
     res.send(error)
   }

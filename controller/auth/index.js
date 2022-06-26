@@ -39,8 +39,12 @@ const login = async (req, res) => {
     if (!validPassword) return res.status(400).send('Invalid credentials')
 
     // assign token
+    // res.send('success')
     assignUserToken(user._id, res)
   } catch (error) {
+    // if (error)
+    // return res.status(400).send('Invalid credentials')
+
     return res.send(error)
   }
 }
@@ -59,7 +63,10 @@ const signup = async (req, res) => {
     const usernameExist = await Auths.findOne({ username: value.username })
     if (usernameExist) return res.status(400).send('Username is not available')
 
-    const { password, email, username } = value
+    const { password, email, username, confirm_password } = value
+
+    if (password !== confirm_password)
+      return res.status(400).send('Password must match')
 
     // Hash password
     const salt = await bcrypt.genSalt(10)
