@@ -1,5 +1,5 @@
 const express = require('express')
-// const { connectDatabase } = require('./config/mongooseConnect')
+const { connectDatabase } = require('./config/mongooseConnect')
 const app = express()
 const path = require('path')
 const cors = require('cors')
@@ -14,11 +14,11 @@ const PORT = process.env.PORT || 4000
 
 // connect to databaseconst connectDatabase = async() => {
 // const connectDatabase = () => {
-mongoose.connect(process.env.mongodbConnectionString, () => {
-  console.log('connected to database')
-})
+// mongoose.connect(process.env.mongodbConnectionString, () => {
+//   console.log('connected to database')
+// })
 // }
-// connectDatabase()
+connectDatabase()
 
 // Allows express use req.body on the routes
 app.use(express.json())
