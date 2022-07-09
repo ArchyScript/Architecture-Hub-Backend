@@ -36,12 +36,12 @@ const comments = require('./routes/reactions.comments')
 const likes = require('./routes/reactions.likes')
 
 // referencing routes
-app.use('/api/auth', auth)
-app.use('/api/posts', Posts)
-app.use('/api/users', users)
-app.use('/api/news', news)
-app.use('/api/reactions/comments', comments)
-app.use('/api/reactions/likes', likes)
+app.use('/v1/api/auth', auth)
+app.use('/v1/api/posts', Posts)
+app.use('/v1/api/users', users)
+app.use('/v1/api/news', news)
+app.use('/v1/api/reactions/comments', comments)
+app.use('/v1/api/reactions/likes', likes)
 
 //
 app.listen(PORT, () => {
