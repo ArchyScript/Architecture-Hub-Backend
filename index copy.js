@@ -28,11 +28,11 @@ app.use('/', express.static(path.join(__dirname, 'static')))
 // }
 
 // routes
-const auth = require('./routes/auth/auth')
-const Posts = require('./routes/posts/posts')
-const users = require('./routes/users/users')
-const news = require('./routes/news/news')
-const uploads = require('./routes/uploads/index')
+const auth = require('./routes/auth')
+const Posts = require('./routes/posts')
+const users = require('./routes/users')
+const news = require('./routes/news')
+const uploads = require('./routes/uploads')
 
 // cloudinary test route
 // const cloudinary_upload = require('./routes/profile')

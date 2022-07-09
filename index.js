@@ -28,20 +28,18 @@ app.use(cors())
 app.use('/', express.static(path.join(__dirname, 'static')))
 
 // routes
-const auth = require('./routes/auth/auths')
-const Posts = require('./routes/posts/posts')
-const users = require('./routes/users/users')
-const news = require('./routes/news/news')
-// const uploads = require('./routes/uploads/index')
-const comments = require('./routes/reactions/comments')
-const likes = require('./routes/reactions/likes')
+const auth = require('./routes/auth')
+const Posts = require('./routes/posts')
+const users = require('./routes/users')
+const news = require('./routes/news')
+const comments = require('./routes/reactions.comments')
+const likes = require('./routes/reactions.likes')
 
 // referencing routes
 app.use('/api/auth', auth)
 app.use('/api/posts', Posts)
 app.use('/api/users', users)
 app.use('/api/news', news)
-// app.use('/api/uploads', uploads)
 app.use('/api/reactions/comments', comments)
 app.use('/api/reactions/likes', likes)
 

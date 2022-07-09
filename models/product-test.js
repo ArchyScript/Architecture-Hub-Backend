@@ -1,12 +1,13 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-var validateEmail = function(email) {
-    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-    return re.test(email)
+var validateEmail = function (email) {
+  var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+  return re.test(email)
 }
 
 // var address = new Schema({
+// hfk
 //     location: {
 //         type: String,
 //         required: [true, 'Location is required'],
@@ -116,41 +117,47 @@ var validateEmail = function(email) {
 // }, )
 
 var test1 = new Schema({
-    title: {
-        type: String,
-        required: [true, 'Location is required'],
-    },
+  title: {
+    type: String,
+    required: [true, 'Location is required'],
+  },
 })
 
-var test2 = new Schema({
+var test2 = new Schema(
+  {
     title: {
-        type: String,
-        required: [true, 'Location is required'],
+      type: String,
+      required: [true, 'Location is required'],
     },
-}, {
+  },
+  {
     _id: false,
-}, )
-const RelatedPostSchema = new Schema({
+  },
+)
+const RelatedPostSchema = new Schema(
+  {
     post_id: {
-        type: String,
-        required: [true, `post_id is required`],
+      type: String,
+      required: [true, `post_id is required`],
     },
     user_id: {
-        type: String,
-        required: [true, `user_is is required`],
+      type: String,
+      required: [true, `user_is is required`],
     },
-}, {
+  },
+  {
     _id: false,
-}, )
+  },
+)
 
 const ProductSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
-    },
-    test1: test1,
-    test2: test2,
-    related_posts: [RelatedPostSchema],
+  name: {
+    type: String,
+    required: true,
+  },
+  test1: test1,
+  test2: test2,
+  related_posts: [RelatedPostSchema],
 })
 
 /* 
@@ -174,4 +181,4 @@ const ProductSchema = new Schema({
   */
 
 module.exports = mongoose.model('ProductTest', ProductSchema)
-    // module.exports = mongoose.model('Product', ProductSchema)
+// module.exports = mongoose.model('Product', ProductSchema)
