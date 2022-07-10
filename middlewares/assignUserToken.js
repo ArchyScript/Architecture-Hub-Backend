@@ -2,11 +2,10 @@ require('dotenv').config()
 const JWT = require('jsonwebtoken')
 const SECRET_KEY = process.env.jwt_token_secret_key
 
-//
 // const assignUserToken = async(user_id, response, username) => {
 const assignUserToken = async (user_id, response, logout) => {
-  const seventy_two_hours = 20
-  // const seventy_two_hours = 259200
+  // const seventy_two_hours = 20
+  const seventy_two_hours = 259200
 
   if (!logout || logout == null || logout === undefined) {
     const token = await JWT.sign(

@@ -1,70 +1,71 @@
 require('dotenv').config()
 const bcrypt = require('bcrypt')
 const Users = require('../models/Users')
-const Auths = require('../models/Auths')
 
 //
-const { loginValidation, signupValidation } = require('../validation/auth')
+const {
+  loginWithEmailValidation,
+  loginWithUsernameValidation,
+  signupValidation,
+  resetPasswordValidation,
+} = require('../validation/auth')
 const { assignUserToken } = require('../middlewares/assignUserToken')
 
-// Get all auth users
-const allAuthUsers = async (req, res) => {
-  try {
-    const authUsers = await Auths.find()
-    res.send(authUsers)
-  } catch (error) {
-    res.send(error)
-  }
-}
-
-// get specific  user
-const specificAuthUser = async (req, res) => {
-  const _id = req.params._id
-
-  // check if user id matches with the "user_id" in the database that was gotten from the auth datbase
-  const user = await Auths.findById({ _id })
-  if (!user) return res.status(400).send('Cannot fetch data of invalid user')
-
-  const { password, createdAt, ...others } = user._doc
-
-  try {
-    res.send(others)
-  } catch (error) {
-    res.send(error)
-  }
-}
-
 //
-const login = async (req, res) => {
-  // const userToken = await req.headers['Content-Type']
-  // console.log(req.headers)
-  // console.log(userToken)
-
+const loginWithEmail = async (req, res) => {
   try {
     // validate user
-    const { value, error } = loginValidation(req.body)
+    const { value, error } = loginWithEmailValidation(req.body)
     if (error) return res.status(400).send(error.details[0].message)
 
-    // check if user with that email exist in database
-    const user = await Auths.findOne({ email: value.email })
+    const { email, password } = value
+
+    // checks if email exist (case-insensitive)
+    const user = await Users.findOne({
+      lowercase_email: email.toLowerCase(),
+    })
     if (!user) return res.status(400).send('Invalid credentials')
 
-    // destructure validated request
-    const { password } = value
+    // checks if email exist (case-sensitive)
+    // const user = await Users.findOne({ email })
+    // if (!user) return res.status(400).send('Invalid credentials')
 
     // check if password is correct
     const validPassword = await bcrypt.compare(password, user.password)
     if (!validPassword) return res.status(400).send('Invalid credentials')
 
-    // assign token
-    // res.send('success')
+    assignUserToken(user._id, res)
+  } catch (error) {
+    res.send(error)
+  }
+}
+
+//
+const loginWithUsername = async (req, res) => {
+  try {
+    // validate user
+    const { value, error } = loginWithUsernameValidation(req.body)
+    if (error) return res.status(400).send(error.details[0].message)
+
+    const { username, password } = value
+
+    // checks if username exist (case-sensitive)
+    const user = await Users.findOne({ username })
+    if (!user) return res.status(400).send('Invalid credentials')
+
+    // checks if username exist (case-insensitive)
+    // const user = await Users.findOne({
+    //   lowercase_username: username.toLowerCase(),
+    // })
+    // if (!user) return res.status(400).send('Invalid credentials')
+
+    // check if password is correct
+    const validPassword = await bcrypt.compare(password, user.password)
+    if (!validPassword) return res.status(400).send('Invalid credentials')
 
     assignUserToken(user._id, res)
   } catch (error) {
-    // if (error)
-    // return res.status(400).send('Invalid credentials')
-
-    return res.send(error)
+    res.send(error)
   }
 }
 
@@ -75,46 +76,42 @@ const signup = async (req, res) => {
     const { value, error } = signupValidation(req.body)
     if (error) return res.status(400).send(error.details[0].message)
 
-    // check if user email is in database
-    const emailExist = await Auths.findOne({ email: value.email })
-    if (emailExist) return res.status(400).send('Email already exist')
+    // destructure request
+    const { email, username, password, confirm_password } = value
 
-    // check if username has been taken
-    const usernameExist = await Auths.findOne({ username: value.username })
-    if (usernameExist) return res.status(400).send('Username is not available')
-
-    const { password, email, username, confirm_password } = value
-
+    // check if password matches confirm_password
     if (password !== confirm_password)
       return res.status(400).send('Password must match')
+
+    // check if user email is in database (case-insensitive)
+    const emailExist = await Users.findOne({
+      lowercase_email: email.toLowerCase(),
+    })
+    if (emailExist) return res.status(400).send('Email already exist')
+
+    // checks if username exist (case-insensitive)
+    const usernameExist = await Users.findOne({
+      lowercase_username: username.toLowerCase(),
+    })
+    if (usernameExist) return res.status(400).send('Username is not available')
 
     // Hash password
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
 
-    const newAuthUser = new Auths({
-      username: username,
-      email: email,
+    const lowercase_email = email.toLowerCase()
+    const lowercase_username = username.toLowerCase()
+
+    const newUser = new Users({
+      username,
+      email,
       password: hashedPassword,
+      lowercase_email,
+      lowercase_username,
     })
 
-    let user_id = ''
-
-    try {
-      const savedUser = await newAuthUser.save()
-      user_id = savedUser._id
-
-      const addUserToMainDB = new Users({
-        user_id: savedUser._id,
-        email: savedUser.email,
-        profile_picture: req.body.profile_picture,
-      })
-
-      // add new user to the main user collection
-      await addUserToMainDB.save()
-    } catch (error) {
-      return res.send(error)
-    }
+    const savedUser = await newUser.save()
+    const user_id = savedUser._id
 
     // assign token
     assignUserToken(user_id, res)
@@ -126,28 +123,43 @@ const signup = async (req, res) => {
 //
 const resetPassword = async (req, res) => {
   try {
-    // validate user
-    const { value, error } = loginValidation(req.body)
+    const { value, error } = resetPasswordValidation(req.body)
     if (error) return res.status(400).send(error.details[0].message)
 
-    // check if user with that email exist in database
-    const user = await Auths.findOne({ email: value.email })
-    if (!user) return res.status(400).send('Invalid credentials email/username')
+    const { _id } = req.params
+    const { email, old_password, new_password, confirm_new_password } = value
 
-    // destructure req.body
-    const { password } = value
+    if (new_password !== confirm_new_password)
+      return res.status(400).send('New password must match')
+
+    // checks if user exist (case-insensitive)
+    const user = await Users.findOne({ _id })
+    if (!user) return res.status(400).send('No User found')
+
+    if (user.lowercase_email !== email.toLowerCase())
+      return res.status(400).send('User email does not match')
+
+    // checks if email exist (case-insensitive)
+    // const user = await Users.findOne({
+    //   lowercase_email: email.toLowerCase(),
+    // })
+
+    // Check if user password is valid
+    const validPassword = await bcrypt.compare(old_password, user.password)
+    if (!validPassword) return res.status(400).send('Incorrect credentials')
 
     // Check if users new password matches the previous one
-    const validPassword = await bcrypt.compare(password, user.password)
-    if (validPassword)
-      return res.status(400).send('Avoid using your previous password')
+    if (old_password === new_password)
+      return res
+        .status(400)
+        .send('Use a password different from your previous one')
 
     // Hash new password
     const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
+    const hashedPassword = await bcrypt.hash(new_password, salt)
 
-    const updatedPost = await Auths.updateOne(
-      { _id: user._id },
+    await Users.updateOne(
+      { _id },
       {
         $set: {
           password: hashedPassword,
@@ -156,7 +168,7 @@ const resetPassword = async (req, res) => {
     )
 
     // assign token
-    assignUserToken(user._id, res)
+    assignUserToken(_id, res)
   } catch (error) {
     return res.send(error)
   }
@@ -174,9 +186,8 @@ const logout = async (req, res) => {
 
 module.exports = {
   signup,
-  login,
-  specificAuthUser,
+  loginWithEmail,
+  loginWithUsername,
   resetPassword,
   logout,
-  allAuthUsers,
 }

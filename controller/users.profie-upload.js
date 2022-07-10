@@ -1,42 +1,64 @@
 const Users = require('../models/Users')
 const cloudinary = require('../config/cloudinary')
 
-// update user account
+// update user profile picture
 const uploadProfilePicture = async (req, res) => {
-  // get user_id from the parameter passed in as a request
-  const user_id = req.params.user_id
+  const { _id } = req.params
 
-  // check if user id matches with the "user_id" in the database that was gotten from the auth datbase
-  const user = await Users.findOne({ user_id: user_id })
-  if (!user) return res.status(400).send('Cannot fetch data of invalid user')
-
-  // add the new profile picture to cloudinary
-  const result = await cloudinary.uploader.upload(req.file.path)
-
-  // check if user have existing profile picture and delete from the cloudinary server
   try {
-    if (user.profile_picture) {
+    const user = await Users.findById({ _id })
+    if (!user) return res.status(400).send('Cannot fetch data of invalid user')
+
+    // add the new profile picture to cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path)
+
+    if (user.profile_picture.cloudinary_id !== '') {
       await cloudinary.uploader.destroy(user.profile_picture.cloudinary_id)
     }
-  } catch (error) {
-    res.send(error)
-  }
 
-  const profile_picture = {
-    title: 'profile-photo',
-    avatar: result.secure_url,
-    cloudinary_id: result.public_id,
-  }
+    const profile_picture = {
+      title: user.username,
+      avatar: result.secure_url,
+      cloudinary_id: result.public_id,
+    }
 
-  try {
-    const updatedUser = await Users.updateOne(
-      { user_id },
+    await Users.updateOne(
+      { _id },
       {
         $set: { profile_picture },
       },
     )
 
-    res.send('Profile picture successfully uploaded')
+    res.status(204).send('Profile picture successfully uploaded')
+  } catch (error) {
+    res.send(error)
+  }
+}
+
+// delete user profile picture
+const deleteProfilePicture = async (req, res) => {
+  const { _id } = req.params
+
+  try {
+    const user = await Users.findById({ _id })
+    if (!user) return res.status(400).send('Cannot fetch data of invalid user')
+
+    console.log(1)
+    if (user.profile_picture.cloudinary_id !== '') {
+      await cloudinary.uploader.destroy(user.profile_picture.cloudinary_id)
+    }
+
+    console.log(2)
+    const profile_picture = { title: '', avatar: '', cloudinary_id: '' }
+    console.log(profile_picture)
+
+    await Users.updateOne(
+      { _id },
+      {
+        $set: { profile_picture },
+      },
+    )
+    res.status(204).send('Profile picture successfully deleted')
   } catch (error) {
     res.send(error)
   }
@@ -44,4 +66,5 @@ const uploadProfilePicture = async (req, res) => {
 
 module.exports = {
   uploadProfilePicture,
+  deleteProfilePicture,
 }

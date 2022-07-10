@@ -12,10 +12,7 @@ const {
   follow,
   unfollow,
 } = require('../controller/users.followers_and_followings')
-const {
-  uploadProfilePicture,
-  deleteProfilePicture,
-} = require('../controller/users.profie-upload')
+const { uploadProfilePicture } = require('../controller/users.profie-upload')
 const { upload } = require('../config/multer')
 const { verifyUserToken } = require('../middlewares/verifyUserToken')
 
@@ -50,20 +47,18 @@ const { verifyUserToken } = require('../middlewares/verifyUserToken')
 
 //
 router.get('/', allUsers)
-router.get('/_id/:_id', specificUserById)
-router.get('/username/:username', specificUserByUsername)
-router.patch('/update/:_id', updateUserAccount)
+// router.get('/:_id', specificUserById)
+router.get('/:username', specificUserByUsername)
+router.patch('/:user_id', updateUserAccount)
 // delete account
-router.delete('/delete/:_id', deleteUserAccount)
+router.delete('/:user_id', deleteUserAccount)
 
-// Upload Profile Picture
+// Profile Picture uploaad
 router.post(
-  '/profile/upload/:_id',
+  '/profile/:user_id',
   upload.single('profile-picture'),
   uploadProfilePicture,
 )
-// Delete profile picture
-router.delete('/profile/delete/:_id', deleteProfilePicture)
 
 // followers
 router.get('/followers/:user_id', allFollowers)
