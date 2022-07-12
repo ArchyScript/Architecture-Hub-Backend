@@ -78,7 +78,7 @@ const updateUserAccount = async (req, res) => {
       },
     )
 
-    res.send('Updated successfully')
+    res.send(`Yeeh! "@${user.username}", you just updated your bio`)
   } catch (error) {
     res.send(error)
   }

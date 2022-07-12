@@ -1,26 +1,50 @@
 const mongoose = require('mongoose')
 
-const ScholarshipSchema = new mongoose.Schema({
-    title: {
+const ScholarshipSchema = new mongoose.Schema(
+  {
+    scholarship_image: {
+      title: {
         type: String,
-        required: true,
+        default: '',
+      },
+      cloudinary_id: {
+        type: String,
+        default: '',
+      },
+      avatar: {
+        type: String,
+        default: '',
+      },
+    },
+    title: {
+      type: String,
+      required: true,
     },
     content: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
-    no_of_likes: {
-        type: Number,
-        default: 0,
+    link: {
+      type: String,
+      default: '',
+      required: true,
     },
-    no_of_comments: {
-        type: Number,
-        default: 0,
+    host: {
+      type: String,
+      default: '',
+      required: true,
     },
-    date: {
-        type: Date,
-        default: Date.now(),
+    description: {
+      type: String,
+      default: '',
+      required: true,
     },
-})
+    creator_id: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true },
+)
 
 module.exports = mongoose.model('Scholarships', ScholarshipSchema)

@@ -66,10 +66,10 @@ router.post(
 router.delete('/profile/delete/:_id', deleteProfilePicture)
 
 // followers
-router.get('/followers/:user_id', allFollowers)
-router.get('/followings/:user_id', allFollowings)
-router.post('/follow/:current_user_id/:another_user_id', follow)
-router.post('/unfollow/:current_user_id/:another_user_id', unfollow)
+router.get('/followers/:_id', allFollowers)
+router.get('/followings/:_id', allFollowings)
+router.post('/follow/:current_user_id/:user_to_follow_id', follow)
+router.post('/unfollow/:current_user_id/:user_to_unfollow_id', unfollow)
 
 //
 //

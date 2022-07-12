@@ -27,9 +27,19 @@ const likes = new Schema(
 
 const PostSchema = new Schema(
   {
-    title: {
-      type: String,
-      required: true,
+    post_image: {
+      title: {
+        type: String,
+        default: '',
+      },
+      cloudinary_id: {
+        type: String,
+        default: '',
+      },
+      avatar: {
+        type: String,
+        default: '',
+      },
     },
     content: {
       type: String,
@@ -39,7 +49,7 @@ const PostSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    user_id: {
+    poster_id: {
       type: String,
       required: true,
     },

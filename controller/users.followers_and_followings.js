@@ -1,12 +1,11 @@
-const { ContextBuilder } = require('express-validator/src/context-builder')
 const Users = require('../models/Users.js')
 
 // Get all followers
 const allFollowers = async (req, res) => {
-  const { user_id } = req.params
+  const { _id } = req.params
+
   try {
-    // check if user id matches with the "user_id" in the database that was gotten from the auth datbase
-    const user = await Users.findOne({ user_id })
+    const user = await Users.findById({ _id })
     if (!user) return res.status(400).send('Cannot fetch data of invalid user')
 
     res.send(user.followers)
@@ -15,13 +14,12 @@ const allFollowers = async (req, res) => {
   }
 }
 
-// Get all followers
+// Get all followings
 const allFollowings = async (req, res) => {
-  const { user_id } = req.params
+  const { _id } = req.params
 
   try {
-    // check if user id matches with the "user_id" in the database that was gotten from the auth datbase
-    const user = await Users.findOne({ user_id })
+    const user = await Users.findById({ _id })
     if (!user) return res.status(400).send('Cannot fetch data of invalid user')
 
     res.send(user.followings)
@@ -32,102 +30,108 @@ const allFollowings = async (req, res) => {
 
 // follow another user
 const follow = async (req, res) => {
-  const { current_user_id, another_user_id } = req.params
+  const { current_user_id, user_to_follow_id } = req.params
 
   // check if user and follower is the same
-  if (current_user_id === another_user_id)
+  if (current_user_id === user_to_follow_id)
     return res.status(400).send(`User can't follow themselve`)
 
   try {
-    // check if current_user_id matches with any "user_id" in the Users collection
-    const current_user = await Users.findOne({ user_id: current_user_id })
+    // check if current_user_id matches with any "_id" in the db
+    const current_user = await Users.findOne({ _id: current_user_id })
     if (!current_user)
       return res.status(400).send('Cannot fetch data of invalid user')
 
-    // check if another_user_id matches with any "user_id" in the User collection
-    const another_user = await Users.findOne({ user_id: another_user_id })
-    if (!another_user)
+    // check if user_to_follow_id matches with any "user_id" in the User collection
+    const user_to_follow = await Users.findOne({ _id: user_to_follow_id })
+    if (!user_to_follow)
       return res
         .status(400)
         .send('Cannot fetch data of user you want to follow')
 
-    // check if another user is part of the current user followers
-    const is_another_user_in_current_user_followers = current_user.followers.find(
-      (current_user_follower) =>
-        current_user_follower.follower_id === another_user_id,
+    // check if user to follow is part of the current user followings
+    // Or check if current user has already follwed user to follow
+    const is_user_to_follow_in_current_user_followings = current_user.followings.find(
+      (current_user_following) =>
+        current_user_following.following_id === user_to_follow_id,
     )
-
-    // return if another user matches any current user follower
-    if (is_another_user_in_current_user_followers)
+    console.log(1)
+    // return if another user matches any current user following
+    if (is_user_to_follow_in_current_user_followings)
       return res
         .status(400)
-        .send(`current user cannot refollow user they have folowed`)
+        .send(
+          `"@${current_user.username}" is already a follower of  "${user_to_follow.username}" `,
+        )
+    console.log(2)
 
-    // check if current user is part of the another user following
-    const is_current_user_in_another_user_followings = another_user.followings.find(
-      (another_user_following) =>
-        another_user_following.following_id === current_user_id,
+    // check if current user is part of the user to follow followers
+    const is_current_user_in_user_to_follow_followers = user_to_follow.followers.find(
+      (user_to_follow_follower) =>
+        user_to_follow_follower.follower_id === current_user_id,
     )
 
-    // return if current user does not match any another user follower
-    if (is_current_user_in_another_user_followings)
+    console.log(3)
+    // return if current user does not match any user to follow follower
+    if (is_current_user_in_user_to_follow_followers)
       return res
         .status(400)
-        .send(`another user cannot be followed by their follower`)
+        .send(
+          `"@${current_user.username}" is already a follower of "${user_to_follow.username}"`,
+        )
 
-    const newFollowingForCurrentUser = {
-      following_id: another_user_id,
-    }
-
-    const newFollwerForAnotherUser = {
-      follower_id: current_user_id,
-    }
+    console.log(4)
+    const current_user_new_following = { following_id: user_to_follow_id }
+    const user_to_follow_new_follower = { follower_id: current_user_id }
 
     let updated_current_user_followings = []
-    let updated_another_user_followers = []
+    let updated_user_to_follow_followers = []
+    console.log(5)
 
     if (current_user.followings.length >= 1) {
       updated_current_user_followings = [
-        newFollowingForCurrentUser,
+        current_user_new_following,
         ...current_user.followings,
       ]
     } else {
-      updated_current_user_followings = [newFollowingForCurrentUser]
+      updated_current_user_followings = [current_user_new_following]
     }
 
-    if (another_user.followers.length >= 1) {
-      updated_another_user_followers = [
-        newFollwerForAnotherUser,
-        ...another_user.followers,
+    console.log(6)
+    if (user_to_follow.followers.length >= 1) {
+      updated_user_to_follow_followers = [
+        user_to_follow_new_follower,
+        ...user_to_follow.followers,
       ]
     } else {
-      updated_another_user_followers = [newFollwerForAnotherUser]
+      updated_user_to_follow_followers = [user_to_follow_new_follower]
     }
 
-    // check so a user can't follow another user twice
-
+    console.log(7)
     // update current user followings
     await Users.updateOne(
-      { user_id: current_user_id },
+      { _id: current_user_id },
       {
         $set: {
           followings: updated_current_user_followings,
         },
       },
     )
+    console.log(8)
 
-    // update another user followers
+    // // update user to follow followers
     await Users.updateOne(
-      { user_id: another_user_id },
+      { _id: user_to_follow_id },
       {
         $set: {
-          followers: updated_another_user_followers,
+          followers: updated_user_to_follow_followers,
         },
       },
     )
+    console.log(9)
 
     res.send(
-      `user with id ${current_user_id} just followed user with id ${another_user_id} `,
+      `"@${current_user.username}" just followed "${user_to_follow.username}" `,
     )
   } catch (error) {
     res.send(error)
@@ -136,85 +140,88 @@ const follow = async (req, res) => {
 
 // unfollow another user
 const unfollow = async (req, res) => {
-  const { current_user_id, another_user_id } = req.params
+  const { current_user_id, user_to_unfollow_id } = req.params
 
-  // check if user and follower is the same
-  if (current_user_id === another_user_id)
+  // check if current user and user to unfollow are the same
+  if (current_user_id === user_to_unfollow_id)
     return res.status(400).send(`User can't unfollow themselve`)
 
   try {
-    // check if current_user_id matches with any "user_id" in the Users collection
-    const current_user = await Users.findOne({ user_id: current_user_id })
+    // check if current user exist
+    const current_user = await Users.findOne({ _id: current_user_id })
     if (!current_user)
       return res.status(400).send('Cannot fetch data of invalid user')
 
-    // check if another_user_id matches with any "user_id" in the User collection
-    const another_user = await Users.findOne({ user_id: another_user_id })
-    if (!another_user)
+    // check if user to unfollow exist
+    const user_to_unfollow = await Users.findOne({
+      _id: user_to_unfollow_id,
+    })
+    if (!user_to_unfollow)
       return res
         .status(400)
         .send('Cannot fetch data of user you want to follow')
 
-    // check if current user have any user they are following
+    // check if current user have any following
     if (current_user.followings.length < 1)
       return res
         .status(400)
-        .send(`current user does not have any user they are following`)
+        .send(`@${current_user.username}" have no followings`)
 
-    // check if another user have any followings
-    if (another_user.followers.length < 1)
-      return res.status(400).send(`another user does not have any followers`)
-
-    // check if another user is part of the current user followings
-    const is_another_user_in_current_user_followings = current_user.followings.find(
-      (current_user_following) =>
-        current_user_following.following_id === another_user_id,
-    )
-
-    // return if another user does not match any current user followings
-    if (!is_another_user_in_current_user_followings)
+    // check if user to unfollow have any followers
+    if (user_to_unfollow.followers.length < 1)
       return res
         .status(400)
-        .send(`current user cannot unfollow user they have not folowed`)
+        .send(`@${user_to_unfollow.username} have no followers`)
 
-    // check if current user is part of the another user followers
-    const is_current_user_in_another_user_followers = another_user.followers.find(
-      (another_user_follower) =>
-        another_user_follower.follower_id === current_user_id,
+    // check if user to unfollow is part of the current user followings
+    const is_user_to_unfollow_in_current_user_followings = current_user.followings.find(
+      (current_user_following) =>
+        current_user_following.following_id === user_to_unfollow_id,
     )
 
-    // return if current user does not match any another user follower
-    if (!is_current_user_in_another_user_followers)
+    if (!is_user_to_unfollow_in_current_user_followings)
       return res
         .status(400)
         .send(
-          `another user cannot be unfollowed by user that have not  folowed them`,
+          `"@${current_user.username}" cannot unfollow "@${user_to_unfollow.username}"`,
         )
 
-    let updated_current_user_followings = []
-    let updated_another_user_followers = []
+    // check if current user is in user to unfollow followers
+    const is_current_user_in_user_to_unfollow_followers = user_to_unfollow.followers.find(
+      (user_to_unfollow_follower) =>
+        user_to_unfollow_follower.follower_id === current_user_id,
+    )
 
-    // filter out the another user in the current user followings
-    if (is_another_user_in_current_user_followings) {
-      updated_current_user_followings = current_user.followings.filter(
-        (current_user_followings) => {
-          current_user_followings.following_id !== another_user_id
-        },
-      )
-    }
+    // return if current user does not match any another user follower
+    if (!is_current_user_in_user_to_unfollow_followers)
+      return res
+        .status(400)
+        .send(
+          `"@${current_user.username}" cannot unfollow "@${user_to_unfollow.username}`,
+        )
 
-    // filter out the current user in the another user followers
-    if (is_current_user_in_another_user_followers) {
-      updated_another_user_followers = another_user.followers.filter(
-        (another_user_follower) => {
-          another_user_follower.follower_id !== current_user_id
-        },
-      )
-    }
+    // let updated_current_user_followings = []
+    // let updated_user_to_unfollow_followers = []
+
+    // filter out the user to unfollow from current user followings
+    const updated_current_user_followings = current_user.followings.filter(
+      (current_user_followings) => {
+        current_user_followings.following_id !== user_to_unfollow_id
+      },
+    )
+    console.log(updated_current_user_followings)
+
+    // filter out the current user from user to unfollow followers
+    const updated_user_to_unfollow_followers = user_to_unfollow.followers.filter(
+      (user_to_unfollow_follower) => {
+        user_to_unfollow_follower.follower_id !== current_user_id
+      },
+    )
+    console.log(updated_user_to_unfollow_followers)
 
     // update current user followings
     await Users.updateOne(
-      { user_id: current_user_id },
+      { _id: current_user_id },
       {
         $set: {
           followings: updated_current_user_followings,
@@ -224,16 +231,16 @@ const unfollow = async (req, res) => {
 
     // update another user followers
     await Users.updateOne(
-      { user_id: another_user_id },
+      { _id: user_to_unfollow_id },
       {
         $set: {
-          followers: updated_another_user_followers,
+          followers: updated_user_to_unfollow_followers,
         },
       },
     )
 
     res.send(
-      `user with id ${current_user_id} just unfollowed user with id ${another_user_id} `,
+      `${current_user.username} just unfollowed ${user_to_unfollow.username}`,
     )
   } catch (error) {
     res.send(error)

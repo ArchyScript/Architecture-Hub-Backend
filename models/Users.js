@@ -33,6 +33,18 @@ const posts = new Schema(
   },
 )
 
+const bookmarked_posts = new Schema(
+  {
+    post_id: {
+      type: String,
+      default: '',
+    },
+  },
+  {
+    _id: false,
+  },
+)
+
 const followers = new Schema(
   {
     follower_id: {
@@ -126,6 +138,7 @@ const UserSchema = new Schema(
       },
     },
     posts: [posts],
+    bookmarked_posts: [bookmarked_posts],
     followers: [followers],
     followings: [followings],
     is_active: {

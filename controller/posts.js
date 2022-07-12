@@ -1,6 +1,10 @@
 const Posts = require('../models/Posts')
-const { postValidation } = require('../validation/posts')
+const {
+  postWithoutImageValidation,
+  postWithImageValidation,
+} = require('../validation/posts')
 const Users = require('../models/Users')
+const cloudinary = require('../config/cloudinary')
 
 // Get all posts
 const allPosts = async (req, res) => {
@@ -12,45 +16,100 @@ const allPosts = async (req, res) => {
   }
 }
 
-// Create new post
-const createPost = async (req, res) => {
-  // get user_id from the parameter passed in as a request
-  const { user_id } = req.params
+// Create new post without
+const newPostWithoutImage = async (req, res) => {
+  const { poster_id } = req.params
 
-  // check if user id matches with the "user_id" in the database that was gotten from the auth datbase
-  const user = await Users.findOne({ user_id: user_id })
-  if (!user) return res.status(400).send('Cannot fetch data of invalid user')
-
-  const { value, error } = postValidation(req.body)
+  const { value, error } = postWithoutImageValidation(req.body)
   if (error) return res.status(400).send(error.details[0].message)
 
-  const { title, content } = value
-  const newPost = new Posts({
-    title,
-    content,
-    user_id,
-  })
-
   try {
+    const user = await Users.findOne({ _id: poster_id })
+    if (!user) return res.status(400).send('Cannot fetch data of invalid user')
+
+    const post_image = { title: '', avatar: '', cloudinary_id: '' }
+    const { content } = value
+
+    const newPost = new Posts({
+      content,
+      post_image,
+      poster_id,
+    })
+
     const savedPost = await newPost.save()
 
     // new object that will be added to the collection of posts created by the user
-    const newPostObjectId = {
+    const newPostObject = {
       post_id: savedPost._id,
     }
 
-    // reference new post by its id in the user posts array
-    const updateUserPostsArray = await Users.updateOne(
-      { user_id },
+    //  update creator post array
+    await Users.updateOne(
+      { _id: poster_id },
       {
         $set: {
-          // use the sprea operator to
-          posts: [...user.posts, newPostObjectId],
+          posts: [newPostObject, ...user.posts],
         },
       },
     )
 
-    res.send(updateUserPostsArray)
+    res.send(`"@${user.username}", you just added new post`)
+  } catch (error) {
+    res.send(error)
+  }
+}
+
+// Create new post witth just one image
+const newPostWithImage = async (req, res) => {
+  const { poster_id } = req.params
+  // post with image {file_path} = req.file for validation and
+  // it's a string
+
+  const request_body = {
+    content: req.body.content,
+    file_path: req.file.path,
+  }
+
+  const { value, error } = postWithImageValidation(request_body)
+  if (error) return res.status(400).send(error.details[0].message)
+
+  try {
+    const user = await Users.findOne({ _id: poster_id })
+    if (!user) return res.status(400).send('Cannot fetch data of invalid user')
+
+    const result = await cloudinary.uploader.upload(req.file.path)
+
+    const { content } = value
+    const post_image = {
+      title: `${user.username} post`,
+      avatar: result.secure_url,
+      cloudinary_id: result.public_id,
+    }
+
+    const newPost = new Posts({
+      content,
+      post_image,
+      poster_id,
+    })
+
+    const savedPost = await newPost.save()
+
+    // new object that will be added to the collection of posts created by the user
+    const newPostObject = {
+      post_id: savedPost._id,
+    }
+
+    //  update creator post array
+    await Users.updateOne(
+      { _id: poster_id },
+      {
+        $set: {
+          posts: [newPostObject, ...user.posts],
+        },
+      },
+    )
+
+    res.send(`"@${user.username}", you just added new post`)
   } catch (error) {
     res.send(error)
   }
@@ -58,14 +117,11 @@ const createPost = async (req, res) => {
 
 // get specific post
 const singlePost = async (req, res) => {
-  const post_id = req.params.post_id
+  const { post_id } = req.params
 
   try {
     const singlePost = await Posts.findById({ _id: post_id })
-    if (!singlePost)
-      return res
-        .status(400)
-        .send('No post has been created yet, create your first post')
+    if (!singlePost) return res.status(400).send('Invalid request')
 
     res.send(singlePost)
   } catch (error) {
@@ -75,34 +131,34 @@ const singlePost = async (req, res) => {
 
 // update specific post
 const updatePost = async (req, res) => {
-  const { user_id, post_id } = req.params
+  const { poster_id, post_id } = req.params
 
   // validate the post request first
-  const { value, error } = postValidation(req.body)
+  const { value, error } = postWithoutImageValidation(req.body)
   if (error) return res.status(400).send(error.details[0].message)
 
-  // check if user id matches with the "user_id" in the database
-  const user = await Users.findOne({ user_id })
-  if (!user) return res.status(400).send('Cannot fetch data of invalid user')
-
-  // Checks if user have any post in their name
-  if (user.posts.length < 1)
-    return res
-      .status(400)
-      .send('User have no post to update, create first post')
-
-  // find matching post by user
-  const post = user.posts.find((post) => post.post_id == post_id)
-
-  // Checks if user created this post
-  if (!post) return res.status(400).send('User did not create this post')
-
-  // Find the post  in the Posts collection by the id gotten from the user
-  const postToBeUpdated = await Posts.findOne({ _id: post.post_id })
-  if (!postToBeUpdated)
-    return res.status(400).send('Cannot fetch post at the moment')
-
   try {
+    // check if user id matches with the "poster_id" in the database
+    const user = await Users.findOne({ poster_id })
+    if (!user) return res.status(400).send('Cannot fetch data of invalid user')
+
+    // Checks if user have any post in their name
+    if (user.posts.length < 1)
+      return res
+        .status(400)
+        .send('User have no post to update, create first post')
+
+    // find matching post by user
+    const post = user.posts.find((post) => post.post_id == post_id)
+
+    // Checks if user created this post
+    if (!post) return res.status(400).send('User did not create this post')
+
+    // Find the post  in the Posts collection by the id gotten from the user
+    const postToBeUpdated = await Posts.findOne({ _id: post.post_id })
+    if (!postToBeUpdated)
+      return res.status(400).send('Cannot fetch post at the moment')
+
     const updatedPost = await Posts.updateOne(
       { _id: post.post_id },
       {
@@ -122,37 +178,41 @@ const updatePost = async (req, res) => {
 
 // delete post
 const deletePost = async (req, res) => {
-  const { user_id, post_id } = req.params
-
-  // check if user id matches with the "user_id" in the database
-  const user = await Users.findOne({ user_id })
-  if (!user) return res.status(400).send('Cannot fetch data of invalid user')
-  // Checks if user have any post in their name
-  if (user.posts.length < 1)
-    return res.status(400).send('User have no post to delete')
-
-  // Checks if user created this post
-  const filteredPost = user.posts.find((post) => post.post_id == post_id)
-  if (!filteredPost)
-    return res.status(400).send('User did not create this post')
-
-  // filter out the deleted post and kep the remaing post(s) available
-  const otherPosts = user.posts.filter((post) => post !== filteredPost)
-
-  // Find the post  in the Posts collection by the id gotten from the user
-  // const postToBeDeleted = await Posts.findOne({ _id: filteredPost.post_id })
-  // if (!postToBeDeleted)
-  //     return res
-  //         .status(400)
-  //         .send('Cannot fetch post from collection at the moment')
+  const { poster_id, post_id } = req.params
 
   try {
+    const user = await Users.findOne({ _id: poster_id })
+    if (!user) return res.status(400).send('Cannot fetch data of invalid user')
+
+    const post = await Posts.findOne({ _id: post_id })
+    if (!post) return res.status(400).send('Cannot fetch data of invalid post')
+
+    // Checks if user have any post
+    if (user.posts.length < 1)
+      return res
+        .status(400)
+        .send(`Hi "@${user.username}",  you have no post to delete'`)
+
+    // Checks if user created this post
+    const filteredPost = user.posts.find((post) => post.post_id == post_id)
+    if (!filteredPost)
+      return res
+        .status(400)
+        .send(`Hi "@${user.username}", you did not create this post`)
+
+    if (post.post_image.cloudinary_id !== '') {
+      await cloudinary.uploader.destroy(post.post_image.cloudinary_id)
+    }
+
+    // filter out the deleted post and kep the remaing post(s) available
+    const otherPosts = user.posts.filter((post) => post !== filteredPost)
+
     // Delete post from Posts collection
     await Posts.deleteOne({ _id: post_id })
 
     // update user posts array
     await Users.updateOne(
-      { user_id },
+      { poster_id },
       {
         $set: {
           posts: otherPosts,
@@ -160,10 +220,17 @@ const deletePost = async (req, res) => {
       },
     )
 
-    res.send('Posts successfully deleted')
+    res.send(`Hi "@${user.username}", you just deleted a post`)
   } catch (error) {
     res.send(error)
   }
 }
 
-module.exports = { allPosts, createPost, singlePost, updatePost, deletePost }
+module.exports = {
+  allPosts,
+  newPostWithoutImage,
+  newPostWithImage,
+  singlePost,
+  updatePost,
+  deletePost,
+}

@@ -1,22 +1,22 @@
 const Joi = require('joi')
 
-const commentValidation = (reactionData) => {
+const commentValidation = (commentData) => {
   const CommentSchema = {
     comment: Joi.string().min(10).max(1024).required(),
   }
 
   const JoiSchema = Joi.object(CommentSchema)
-  return JoiSchema.validate(reactionData)
+  return JoiSchema.validate(commentData)
 }
 
-const likeValidation = (reactionData) => {
+const likeValidation = (likeData) => {
   const LikeSchema = {
     //   like_type can be any type of reaction (e.g like, heart, emoji) per post by the user
     like_type: Joi.string().required(),
   }
 
   const JoiSchema = Joi.object(LikeSchema)
-  return JoiSchema.validate(reactionData)
+  return JoiSchema.validate(likeData)
 }
 
 module.exports = { commentValidation, likeValidation }
