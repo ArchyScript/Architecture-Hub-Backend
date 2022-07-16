@@ -55,15 +55,13 @@ const follow = async (req, res) => {
       (current_user_following) =>
         current_user_following.following_id === user_to_follow_id,
     )
-    console.log(1)
     // return if another user matches any current user following
     if (is_user_to_follow_in_current_user_followings)
       return res
         .status(400)
         .send(
-          `"@${current_user.username}" is already a follower of  "${user_to_follow.username}" `,
+          `"@${current_user.username}" is already a follower of  "@${user_to_follow.username}" `,
         )
-    console.log(2)
 
     // check if current user is part of the user to follow followers
     const is_current_user_in_user_to_follow_followers = user_to_follow.followers.find(
@@ -71,7 +69,6 @@ const follow = async (req, res) => {
         user_to_follow_follower.follower_id === current_user_id,
     )
 
-    console.log(3)
     // return if current user does not match any user to follow follower
     if (is_current_user_in_user_to_follow_followers)
       return res
@@ -80,13 +77,11 @@ const follow = async (req, res) => {
           `"@${current_user.username}" is already a follower of "${user_to_follow.username}"`,
         )
 
-    console.log(4)
     const current_user_new_following = { following_id: user_to_follow_id }
     const user_to_follow_new_follower = { follower_id: current_user_id }
 
     let updated_current_user_followings = []
     let updated_user_to_follow_followers = []
-    console.log(5)
 
     if (current_user.followings.length >= 1) {
       updated_current_user_followings = [
@@ -97,7 +92,6 @@ const follow = async (req, res) => {
       updated_current_user_followings = [current_user_new_following]
     }
 
-    console.log(6)
     if (user_to_follow.followers.length >= 1) {
       updated_user_to_follow_followers = [
         user_to_follow_new_follower,
@@ -107,7 +101,6 @@ const follow = async (req, res) => {
       updated_user_to_follow_followers = [user_to_follow_new_follower]
     }
 
-    console.log(7)
     // update current user followings
     await Users.updateOne(
       { _id: current_user_id },
@@ -117,7 +110,6 @@ const follow = async (req, res) => {
         },
       },
     )
-    console.log(8)
 
     // // update user to follow followers
     await Users.updateOne(
@@ -128,7 +120,6 @@ const follow = async (req, res) => {
         },
       },
     )
-    console.log(9)
 
     res.send(
       `"@${current_user.username}" just followed "${user_to_follow.username}" `,

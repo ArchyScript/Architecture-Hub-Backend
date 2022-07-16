@@ -1,13 +1,11 @@
 const router = require('express').Router()
 const {
-  // allComments,
   newComment,
   // singleComment,
   // updateComment,
   deleteComment,
 } = require('../controller/reactions.comments')
 const {
-  // allLikes,
   newLike,
   // singleLike,
   reverseLike,

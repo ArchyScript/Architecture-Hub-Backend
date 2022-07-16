@@ -1,9 +1,9 @@
-const validateIdLength = (value) => {
-    if (value.length === 24) return true
+// const validateIdLength = (value) => {
+//     if (value.length === 24) return true
 
-    return false
-}
+//     return false
+// }
 
-module.exports = {
-    validateIdLength,
-}
+// module.exports = {
+//     validateIdLength,
+// }

@@ -65,6 +65,8 @@ const newPostWithImage = async (req, res) => {
   // post with image {file_path} = req.file for validation and
   // it's a string
 
+  if (!req.file) return res.status(400).send('No image selected')
+
   const request_body = {
     content: req.body.content,
     file_path: req.file.path,

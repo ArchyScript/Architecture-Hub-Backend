@@ -5,8 +5,10 @@ const cloudinary = require('../config/cloudinary')
 const uploadProfilePicture = async (req, res) => {
   const { _id } = req.params
 
+  if (!req.file) return res.status(400).send('No picture selected')
+
   try {
-    const user = await Users.findById({ _id })
+    const user = await Users.findOne({ _id })
     if (!user) return res.status(400).send('Cannot fetch data of invalid user')
 
     // add the new profile picture to cloudinary
@@ -29,7 +31,7 @@ const uploadProfilePicture = async (req, res) => {
       },
     )
 
-    res.status(204).send('Profile picture successfully uploaded')
+    res.send(`@${user.username}, you just uploaded a your profile picture`)
   } catch (error) {
     res.send(error)
   }
@@ -43,14 +45,11 @@ const deleteProfilePicture = async (req, res) => {
     const user = await Users.findById({ _id })
     if (!user) return res.status(400).send('Cannot fetch data of invalid user')
 
-    console.log(1)
     if (user.profile_picture.cloudinary_id !== '') {
       await cloudinary.uploader.destroy(user.profile_picture.cloudinary_id)
     }
 
-    console.log(2)
     const profile_picture = { title: '', avatar: '', cloudinary_id: '' }
-    console.log(profile_picture)
 
     await Users.updateOne(
       { _id },
@@ -58,7 +57,7 @@ const deleteProfilePicture = async (req, res) => {
         $set: { profile_picture },
       },
     )
-    res.status(204).send('Profile picture successfully deleted')
+    res.send(`@${user.username}, you just removed a your profile picture`)
   } catch (error) {
     res.send(error)
   }

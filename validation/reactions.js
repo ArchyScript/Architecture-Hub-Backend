@@ -2,7 +2,7 @@ const Joi = require('joi')
 
 const commentValidation = (commentData) => {
   const CommentSchema = {
-    comment: Joi.string().min(10).max(1024).required(),
+    comment: Joi.string().max(256).required(),
   }
 
   const JoiSchema = Joi.object(CommentSchema)

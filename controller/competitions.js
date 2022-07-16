@@ -15,6 +15,8 @@ const allCompetitions = async (req, res) => {
 
 // Create new competition
 const createCompetition = async (req, res) => {
+  if (!req.file) return res.status(400).send('No image selected')
+
   const request_body = { ...req.body, file_path: req.file.path }
   const { creator_id } = req.params
 

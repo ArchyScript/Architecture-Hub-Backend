@@ -193,7 +193,7 @@ const reverseLike = async (req, res) => {
     if (!likeToDelete) return res.status(400).send('No likes with this id')
 
     if (likeToDelete.liker_id !== liker_id)
-      return res.status(400).send(`User can't delete like they didin't create`)
+      return res.status(400).send(`User cannot reverse like`)
 
     const { post_id } = likeToDelete
 
@@ -218,7 +218,7 @@ const reverseLike = async (req, res) => {
       },
     )
 
-    res.status(204).send(`"@${liker.username}" reversed like`)
+    res.send(`"@${liker.username}" reversed like`)
   } catch (error) {
     res.send(error)
   }
