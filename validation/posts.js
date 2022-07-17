@@ -11,7 +11,7 @@ const postWithoutImageValidation = (postData) => {
 
 const postWithImageValidation = (postData) => {
   const PostSchema = {
-    content: Joi.string().min(10).max(1024).required(),
+    content: Joi.string().max(256).optional(),
     file_path: Joi.string().required(),
   }
 
