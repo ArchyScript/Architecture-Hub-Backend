@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const {
   newComment,
-  // singleComment,
+  singleComment,
   // updateComment,
   deleteComment,
 } = require('../controller/reactions.comments')
@@ -13,7 +13,7 @@ const {
 
 /* Comments */
 // router.get('/comments/', allComments)
-// router.get('/comments/:comment_id', singleComment)
+router.get('/comments/:comment_id', singleComment)
 router.post('/comments/:commenter_id/:post_id', newComment)
 // router.patch('/comments/:comment_id', updateComment)
 router.delete('/comments/:commenter_id/:comment_id', deleteComment)
