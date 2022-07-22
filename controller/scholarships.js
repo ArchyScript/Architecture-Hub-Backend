@@ -57,12 +57,12 @@ const specificScholarship = async (req, res) => {
   const { scholarship_id } = req.params
 
   try {
-    const createScholarship = await Scholarships.findOne({
+    const specificScholarship = await Scholarships.findOne({
       _id: scholarship_id,
     })
-    if (!createScholarship) return res.status(400).send('Invalid request')
+    if (!specificScholarship) return res.status(400).send('Invalid request')
 
-    res.send(createScholarship)
+    res.send(specificScholarship)
   } catch (error) {
     res.send(error)
   }

@@ -33,11 +33,15 @@ const posts = new Schema(
   },
 )
 
-const bookmarked_posts = new Schema(
+const bookmarked = new Schema(
   {
     post_id: {
       type: String,
       default: '',
+    },
+    post_type: {
+      type: String,
+      enum: ['post', 'competition', 'scholarship'],
     },
   },
   {
@@ -138,7 +142,7 @@ const UserSchema = new Schema(
       },
     },
     posts: [posts],
-    bookmarked_posts: [bookmarked_posts],
+    bookmarked: [bookmarked],
     followers: [followers],
     followings: [followings],
     is_active: {

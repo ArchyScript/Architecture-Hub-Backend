@@ -1,39 +1,74 @@
 const router = require('express').Router()
+//
+/* Posts */
 const {
-  newComment,
-  singleComment,
-  // updateComment,
-  deleteComment,
-} = require('../controller/reactions.comments')
+  newPostComment,
+  singlePostComment,
+  deletePostComment,
+} = require('../controller/reactions.posts.comments')
 const {
-  newLike,
-  // singleLike,
-  reverseLike,
-} = require('../controller/reactions.likes')
+  newPostLike,
+  reversePostLike,
+} = require('../controller/reactions.posts.likes')
 
-/* Comments */
-// router.get('/comments/', allComments)
-router.get('/comments/:comment_id', singleComment)
-router.post('/comments/:commenter_id/:post_id', newComment)
-// router.patch('/comments/:comment_id', updateComment)
-router.delete('/comments/:commenter_id/:comment_id', deleteComment)
+/* Posts Comments */
+router.get('/post/comments/:comment_id', singlePostComment)
+router.post('/post/comments/:commenter_id/:post_id', newPostComment)
+router.delete('/post/comments/:commenter_id/:comment_id', deletePostComment)
+/* Posts Likes */
+router.post('/post/likes/:liker_id/:post_id', newPostLike)
+router.delete('/post/likes/:liker_id/:like_id', reversePostLike)
 
-// router.get('/comments/', allComments)
-// router.get('/comments/:comment_id', singleComment)
-// router.post('/comments/:commenter_id/:post_id', newComment)
-// router.patch('/comments/:post_id/:comment_id', updateComment)
-// router.delete('/comments/:post_id/:comment_id', deleteComment)
+//
+/* Competitions */
+const {
+  newCompetitionComment,
+  singleCompetitionComment,
+  deleteCompetitionComment,
+} = require('../controller/reactions.competitions.comments')
+const {
+  newCompetitionLike,
+  reverseCompetitionLike,
+} = require('../controller/reactions.competitions.likes')
 
-// router.get('/comments/', allComments)
-// router.get('/comments/:post_id/:user_id', singleComment)
-// router.post('/comments/:post_id/:user_id', newComment)
-// router.patch('/comments/:post_id/:user_id', updateComment)
-// router.delete('/comments/:post_id/:user_id', deleteComment)
+/* Competitions Comments */
+router.post(
+  '/competition/comments/:commenter_id/:competition_id',
+  newCompetitionComment,
+)
+router.get('/competition/comments/:comment_id', singleCompetitionComment)
+router.delete(
+  '/competition/comments/:commenter_id/:comment_id',
+  deleteCompetitionComment,
+)
+/* Competitions Likes */
+router.post('/competition/likes/:liker_id/:competition_id', newCompetitionLike)
+router.delete('/competition/likes/:liker_id/:like_id', reverseCompetitionLike)
 
-/* Likes */
-// router.get('/likes/', allLikes)
-// router.get('/likes/:like_id', singleLike)
-router.post('/likes/:liker_id/:post_id', newLike)
-router.delete('/likes/:liker_id/:like_id', reverseLike)
+//
+/* Scholarships */
+const {
+  newScholarshipComment,
+  singleScholarshipComment,
+  deleteScholarshipComment,
+} = require('../controller/reactions.scholarships.comments')
+const {
+  newScholarshipLike,
+  reverseScholarshipLike,
+} = require('../controller/reactions.scholarships.likes')
+
+/* Scholarships Comments */
+router.post(
+  '/scholarship/comments/:commenter_id/:scholarship_id',
+  newScholarshipComment,
+)
+router.get('/scholarship/comments/:comment_id', singleScholarshipComment)
+router.delete(
+  '/scholarship/comments/:commenter_id/:comment_id',
+  deleteScholarshipComment,
+)
+/* Scholarships Likes */
+router.post('/scholarship/likes/:liker_id/:scholarship_id', newScholarshipLike)
+router.delete('/scholarship/likes/:liker_id/:like_id', reverseScholarshipLike)
 
 module.exports = router

@@ -1,13 +1,13 @@
 const Users = require('../models/Users')
 // const Auths = require('../models/Auths')
-const { Comments } = require('../models/Reactions')
+const { PostComments } = require('../models/Reactions.Posts')
 const Posts = require('../models/Posts')
 const { commentValidation } = require('../validation/reactions')
 
 // Get all comments
-const allComments = async (req, res) => {
+const allPostsComments = async (req, res) => {
   try {
-    const comments = await Comments.find()
+    const comments = await PostComments.find()
     if (comments.length < 1)
       return res
         .status(400)
@@ -20,21 +20,21 @@ const allComments = async (req, res) => {
 }
 
 // get single comment
-const singleComment = async (req, res) => {
+const singlePostComment = async (req, res) => {
   const { comment_id } = req.params
 
   try {
-    const singleComment = await Comments.findById({ _id: comment_id })
-    if (!singleComment) return res.status(400).send('No comments with this id')
+    const singlePostComment = await PostComments.findById({ _id: comment_id })
+    if (!singlePostComment) return res.status(400).send('Not found')
 
-    res.send(singleComment)
+    res.send(singlePostComment)
   } catch (error) {
     res.send(error)
   }
 }
 
 // Create new comment
-const newComment = async (req, res) => {
+const newPostComment = async (req, res) => {
   const { commenter_id, post_id } = req.params
 
   try {
@@ -50,14 +50,14 @@ const newComment = async (req, res) => {
       return res.status(400).send('Cannot fetch post at the moment')
 
     // create new comment
-    const newComment = new Comments({
+    const newPostComment = new PostComments({
       comment: value.comment,
       commenter_id,
       edited: false,
       post_id,
     })
 
-    const savedComment = await newComment.save()
+    const savedComment = await newPostComment.save()
 
     const newCommentObjectId = {
       comment_id: savedComment._id,
@@ -68,7 +68,7 @@ const newComment = async (req, res) => {
         { _id: post_id },
         {
           $set: {
-            comments: [...postToCommentOn.comments, newCommentObjectId],
+            comments: [newCommentObjectId, ...postToCommentOn.comments],
           },
         },
       )
@@ -90,7 +90,7 @@ const newComment = async (req, res) => {
 }
 
 // update comment
-const updateComment = async (req, res) => {
+const updatePostComment = async (req, res) => {
   const { post_id, comment_id } = req.params
 
   // validate the comment request first
@@ -114,12 +114,12 @@ const updateComment = async (req, res) => {
     return res.status(400).send('Comment is not available for this post')
 
   // Find comment in Comment collection by comment_id
-  const commentToBeUpdated = await Comments.findOne({ _id: comment_id })
+  const commentToBeUpdated = await PostComments.findOne({ _id: comment_id })
   if (!commentToBeUpdated)
     return res.status(400).send('Cannot fetch comment at the moment')
 
   try {
-    const updatedComment = await Comments.updateOne(
+    const updatedComment = await PostComments.updateOne(
       { _id: post.post_id },
       {
         $set: {
@@ -136,7 +136,7 @@ const updateComment = async (req, res) => {
 }
 
 // delete post
-const deleteComment = async (req, res) => {
+const deletePostComment = async (req, res) => {
   const { commenter_id, comment_id } = req.params
 
   try {
@@ -144,9 +144,8 @@ const deleteComment = async (req, res) => {
     if (!commenter)
       return res.status(400).send('Cannot fetch data of invalid user')
 
-    const commentToDelete = await Comments.findById({ _id: comment_id })
-    if (!commentToDelete)
-      return res.status(400).send('No comments with this id')
+    const commentToDelete = await PostComments.findById({ _id: comment_id })
+    if (!commentToDelete) return res.status(400).send('Not found')
 
     if (commentToDelete.commenter_id !== commenter_id)
       return res
@@ -159,7 +158,7 @@ const deleteComment = async (req, res) => {
     if (!commentPost) return res.status(400).send('This post is not available')
 
     // Delete comment
-    await Comments.deleteOne({ _id: comment_id })
+    await PostComments.deleteOne({ _id: comment_id })
 
     // filter out the deleted comment and keep the remaining comment(s) available
     const otherComments = commentPost.comments.filter(
@@ -183,9 +182,9 @@ const deleteComment = async (req, res) => {
 }
 
 module.exports = {
-  allComments,
-  newComment,
-  singleComment,
-  updateComment,
-  deleteComment,
+  // allPostsComments,
+  newPostComment,
+  singlePostComment,
+  // updatePostComment,
+  deletePostComment,
 }

@@ -1,15 +1,14 @@
 const Users = require('../models/Users')
-// const Auths = require('../models/Auths')
 const Posts = require('../models/Posts')
-const { Likes } = require('../models/Reactions.js')
+const { PostLikes } = require('../models/Reactions.Posts.js')
 const { likeValidation } = require('../validation/reactions')
 
 // Get all likes
-const allLikes = async (req, res) => {
+const allPostsLikes = async (req, res) => {
   try {
-    const likes = await Likes.find()
+    const likes = await PostLikes.find()
     if (likes.length < 1)
-      return res.status(400).send('No user has likesd this post until now')
+      return res.status(400).send('No user has liked this post until now')
 
     res.send(likes)
   } catch (error) {
@@ -18,21 +17,21 @@ const allLikes = async (req, res) => {
 }
 
 // get single like
-const singleLike = async (req, res) => {
+const singlePostLike = async (req, res) => {
   const like_id = req.params.like_id
 
   try {
-    const singleLike = await Likes.findById({ _id: like_id })
-    if (!singleLike) return res.status(400).send('No likes with this id')
+    const singlePostLike = await PostLikes.findById({ _id: like_id })
+    if (!singlePostLike) return res.status(400).send('No likes with this id')
 
-    res.send(singleLike)
+    res.send(singlePostLike)
   } catch (error) {
     res.send(error)
   }
 }
 
 // Create new like
-const newLike = async (req, res) => {
+const newPostLike = async (req, res) => {
   const { liker_id, post_id } = req.params
 
   const { value, error } = likeValidation(req.body)
@@ -47,7 +46,7 @@ const newLike = async (req, res) => {
       return res.status(400).send('Cannot fetch  post at the moment')
 
     // check if post have been liked before
-    const does_post_match_any_like = await Likes.findOne({ post_id })
+    const does_post_match_any_like = await PostLikes.findOne({ post_id })
     if (
       does_post_match_any_like &&
       does_post_match_any_like.liker_id === liker_id
@@ -57,13 +56,13 @@ const newLike = async (req, res) => {
         .send(`"@${liker.username}", you cannot like a post twice`)
 
     // create new like
-    const newLike = new Likes({
+    const newPostLike = new PostLikes({
       like_type: value.like_type,
       liker_id,
       post_id,
     })
 
-    const savedLike = await newLike.save()
+    const savedLike = await newPostLike.save()
 
     const newLikeObjectId = {
       like_id: savedLike._id,
@@ -74,7 +73,7 @@ const newLike = async (req, res) => {
         { _id: post_id },
         {
           $set: {
-            likes: [...postToLike.likes, newLikeObjectId],
+            likes: [newLikeObjectId, ...postToLike.likes],
           },
         },
       )
@@ -118,12 +117,12 @@ const newLike = async (req, res) => {
 //     return res.status(400).send('Like reaction is not available for this post')
 
 //   // Find like in Like collection by like_id
-//   const likeToBeUpdated = await Likes.findOne({ _id: like_id })
+//   const likeToBeUpdated = await PostLikes.findOne({ _id: like_id })
 //   if (!likeToBeUpdated)
 //     return res.status(400).send('Cannot fetch like at the moment')
 
 //   try {
-//     const updatedLike = await Likes.updateOne(
+//     const updatedLike = await PostLikes.updateOne(
 //       { _id: post.post_id },
 //       {
 //         $set: {
@@ -160,12 +159,12 @@ const newLike = async (req, res) => {
 //     return res.status(400).send('Like reaction is not available for this post')
 
 //   // Find like in Like collection by like_id
-//   const likeToBeUpdated = await Likes.findOne({ _id: like_id })
+//   const likeToBeUpdated = await PostLikes.findOne({ _id: like_id })
 //   if (!likeToBeUpdated)
 //     return res.status(400).send('Cannot fetch like at the moment')
 
 //   try {
-//     const updatedLike = await Likes.updateOne(
+//     const updatedLike = await PostLikes.updateOne(
 //       { _id: post.post_id },
 //       {
 //         $set: {
@@ -181,7 +180,7 @@ const newLike = async (req, res) => {
 // }
 
 // reverse post
-const reverseLike = async (req, res) => {
+const reversePostLike = async (req, res) => {
   const { liker_id, like_id } = req.params
 
   try {
@@ -189,7 +188,7 @@ const reverseLike = async (req, res) => {
     const liker = await Users.findById({ _id: liker_id })
     if (!liker) return res.status(400).send('Cannot fetch data of invalid user')
 
-    const likeToDelete = await Likes.findById({ _id: like_id })
+    const likeToDelete = await PostLikes.findById({ _id: like_id })
     if (!likeToDelete) return res.status(400).send('No likes with this id')
 
     if (likeToDelete.liker_id !== liker_id)
@@ -201,7 +200,7 @@ const reverseLike = async (req, res) => {
     if (!likePost) return res.status(400).send('Posts is no more available')
 
     // Delete like
-    await Likes.deleteOne({ _id: like_id })
+    await PostLikes.deleteOne({ _id: like_id })
 
     // filter out the deleted like and leave the remaing like(s) available
     const remainingLikes = likePost.likes.filter(
@@ -225,8 +224,8 @@ const reverseLike = async (req, res) => {
 }
 
 module.exports = {
-  allLikes,
-  newLike,
-  singleLike,
-  reverseLike,
+  // allPostsLikes,
+  newPostLike,
+  // singlePostLike,
+  reversePostLike,
 }

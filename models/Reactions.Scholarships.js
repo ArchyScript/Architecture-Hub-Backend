@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const CommentSchema = new mongoose.Schema(
+const ScholarshipCommentSchema = new mongoose.Schema(
   {
     comment: {
       type: String,
@@ -14,7 +14,7 @@ const CommentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    post_id: {
+    scholarship_id: {
       type: String,
       required: true,
     },
@@ -22,7 +22,7 @@ const CommentSchema = new mongoose.Schema(
   { timestamps: true },
 )
 
-const LikesSchema = new mongoose.Schema(
+const ScholarshipLikesSchema = new mongoose.Schema(
   {
     like_type: {
       type: String,
@@ -32,7 +32,7 @@ const LikesSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    post_id: {
+    scholarship_id: {
       type: String,
       required: true,
     },
@@ -40,7 +40,13 @@ const LikesSchema = new mongoose.Schema(
   { timestamps: true },
 )
 
-const Comments = mongoose.model('Comments', CommentSchema)
-const Likes = mongoose.model('Likes', LikesSchema)
+const ScholarshipComments = mongoose.model(
+  'ScholarshipComments',
+  ScholarshipCommentSchema,
+)
+const ScholarshipLikes = mongoose.model(
+  'ScholarshipLikes',
+  ScholarshipLikesSchema,
+)
 
-module.exports = { Comments, Likes }
+module.exports = { ScholarshipComments, ScholarshipLikes }

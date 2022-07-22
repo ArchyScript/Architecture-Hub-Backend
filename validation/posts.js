@@ -2,7 +2,7 @@ const Joi = require('joi')
 
 const postWithoutImageValidation = (postData) => {
   const PostSchema = {
-    content: Joi.string().min(10).max(1024).required(),
+    content: Joi.string().max(256).required(),
   }
 
   const JoiSchema = Joi.object(PostSchema)

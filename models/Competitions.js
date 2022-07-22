@@ -1,5 +1,29 @@
 const mongoose = require('mongoose')
 
+const comments = new mongoose.Schema(
+  {
+    comment_id: {
+      type: String,
+      required: [true, 'comment_id is required'],
+    },
+  },
+  {
+    _id: false,
+  },
+)
+
+const likes = new mongoose.Schema(
+  {
+    like_id: {
+      type: String,
+      required: [true, 'like_id is required'],
+    },
+  },
+  {
+    _id: false,
+  },
+)
+
 const CompetitionSchema = new mongoose.Schema(
   {
     competition_image: {
@@ -43,6 +67,9 @@ const CompetitionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
+    comments: [comments],
+    likes: [likes],
   },
   { timestamps: true },
 )
