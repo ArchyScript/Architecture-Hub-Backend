@@ -47,7 +47,21 @@ const createCompetition = async (req, res) => {
       creator_id,
     })
 
-    await newCompetition.save()
+    const savedCompetition = await newCompetition.save()
+
+    const newCompetitionObject = {
+      competition_id: savedCompetition._id,
+    }
+
+    await Users.updateOne(
+      { _id: creator_id },
+      {
+        $set: {
+          competitions: [...user.competitions, newCompetitionObject],
+        },
+      },
+    )
+
     res.send(`"@${user.username}", you just added a new competition`)
   } catch (error) {
     res.send(error)

@@ -45,7 +45,21 @@ const createScholarship = async (req, res) => {
       creator_id,
     })
 
-    await newScholarship.save()
+    // await newScholarship.save()
+    const savedScholarship = await newScholarship.save()
+
+    const newScholarshipObject = {
+      competition_id: savedScholarship._id,
+    }
+
+    await Users.updateOne(
+      { _id: creator_id },
+      {
+        $set: {
+          scholarships: [...user.scholarships, newScholarshipObject],
+        },
+      },
+    )
     res.send(`"@${user.username}", you just added a new scholarship`)
   } catch (error) {
     res.send(error)
