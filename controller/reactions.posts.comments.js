@@ -182,7 +182,7 @@ const deletePostComment = async (req, res) => {
 }
 
 module.exports = {
-  // allPostsComments,
+  allPostsComments,
   newPostComment,
   singlePostComment,
   // updatePostComment,

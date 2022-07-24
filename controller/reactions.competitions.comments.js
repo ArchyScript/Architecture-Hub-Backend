@@ -197,7 +197,7 @@ const deleteCompetitionComment = async (req, res) => {
 }
 
 module.exports = {
-  // allCompetitionsComments,
+  allCompetitionsComments,
   newCompetitionComment,
   singleCompetitionComment,
   // updateCompetitionComment,

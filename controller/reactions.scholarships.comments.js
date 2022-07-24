@@ -199,7 +199,7 @@ const deleteScholarshipComment = async (req, res) => {
 }
 
 module.exports = {
-  // allScholarshipsComments,
+  allScholarshipsComments,
   newScholarshipComment,
   singleScholarshipComment,
   // updateScholarshipComment,

@@ -224,7 +224,7 @@ const reversePostLike = async (req, res) => {
 }
 
 module.exports = {
-  // allPostsLikes,
+  allPostsLikes,
   newPostLike,
   // singlePostLike,
   reversePostLike,

@@ -235,7 +235,7 @@ const reverseScholarshipLike = async (req, res) => {
 }
 
 module.exports = {
-  // allScholarshipsLikes,
+  allScholarshipsLikes,
   newScholarshipLike,
   // singleScholarshipLike,
   reverseScholarshipLike,

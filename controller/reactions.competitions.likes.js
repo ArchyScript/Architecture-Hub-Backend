@@ -234,7 +234,7 @@ const reverseCompetitionLike = async (req, res) => {
 }
 
 module.exports = {
-  // allCompetitionsLikes,
+  allCompetitionsLikes,
   newCompetitionLike,
   // singleCompetitionLike,
   reverseCompetitionLike,
