@@ -72,7 +72,7 @@ const newCompetitionComment = async (req, res) => {
         { _id: competition_id },
         {
           $set: {
-            comments: [newCommentObjectId, ...competitionToCommentOn.comments],
+            comments: [...competitionToCommentOn.comments, newCommentObjectId],
           },
         },
       )

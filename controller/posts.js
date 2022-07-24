@@ -48,7 +48,7 @@ const newPostWithoutImage = async (req, res) => {
       { _id: poster_id },
       {
         $set: {
-          posts: [newPostObject, ...user.posts],
+          posts: [...user.posts, newPostObject],
         },
       },
     )
@@ -106,7 +106,7 @@ const newPostWithImage = async (req, res) => {
       { _id: poster_id },
       {
         $set: {
-          posts: [newPostObject, ...user.posts],
+          posts: [...user.posts, newPostObject],
         },
       },
     )

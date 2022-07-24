@@ -68,7 +68,7 @@ const newPostComment = async (req, res) => {
         { _id: post_id },
         {
           $set: {
-            comments: [newCommentObjectId, ...postToCommentOn.comments],
+            comments: [...postToCommentOn.comments, newCommentObjectId],
           },
         },
       )

@@ -32,6 +32,28 @@ const posts = new Schema(
     _id: false,
   },
 )
+const competitions = new Schema(
+  {
+    competition_id: {
+      type: String,
+      default: '',
+    },
+  },
+  {
+    _id: false,
+  },
+)
+const scholarships = new Schema(
+  {
+    scholarship_id: {
+      type: String,
+      default: '',
+    },
+  },
+  {
+    _id: false,
+  },
+)
 
 const bookmarked = new Schema(
   {
@@ -142,6 +164,8 @@ const UserSchema = new Schema(
       },
     },
     posts: [posts],
+    competitions: [competitions],
+    scholarships: [scholarships],
     bookmarked: [bookmarked],
     followers: [followers],
     followings: [followings],
