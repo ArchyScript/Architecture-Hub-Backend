@@ -7,8 +7,7 @@ const { likeValidation } = require('../validation/reactions')
 const allPostsLikes = async (req, res) => {
   try {
     const likes = await PostLikes.find()
-    if (likes.length < 1)
-      return res.status(400).send('No user has liked this post until now')
+    if (likes.length < 1) return res.status(400).send('No liked post')
 
     res.send(likes)
   } catch (error) {
