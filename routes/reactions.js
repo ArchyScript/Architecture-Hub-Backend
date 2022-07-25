@@ -19,7 +19,7 @@ router.get('/post/comments/:comment_id', singlePostComment)
 router.post('/post/comments/:commenter_id/:post_id', newPostComment)
 router.delete('/post/comments/:commenter_id/:comment_id', deletePostComment)
 /* Posts Likes */
-router.post('/post/likes', allPostsLikes)
+router.get('/post/likes', allPostsLikes)
 router.post('/post/likes/:liker_id/:post_id', newPostLike)
 router.delete('/post/likes/:liker_id/:like_id', reversePostLike)
 
@@ -49,7 +49,7 @@ router.delete(
   deleteCompetitionComment,
 )
 /* Competitions Likes */
-router.post('/competition/likes', allCompetitionsLikes)
+router.get('/competition/likes', allCompetitionsLikes)
 router.post('/competition/likes/:liker_id/:competition_id', newCompetitionLike)
 router.delete('/competition/likes/:liker_id/:like_id', reverseCompetitionLike)
 
@@ -79,7 +79,7 @@ router.delete(
   deleteScholarshipComment,
 )
 /* Scholarships Likes */
-router.post('/scholarship/likes', allScholarshipsLikes)
+router.get('/scholarship/likes', allScholarshipsLikes)
 router.post('/scholarship/likes/:liker_id/:scholarship_id', newScholarshipLike)
 router.delete('/scholarship/likes/:liker_id/:like_id', reverseScholarshipLike)
 
