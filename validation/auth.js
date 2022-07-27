@@ -4,6 +4,20 @@ const Joi = require('joi')
 const resetPasswordValidation = (data) => {
   const resetPasswordSchema = {
     email: Joi.string().min(6).max(256).required().email(),
+    username: Joi.string().min(6).max(256).required(),
+    new_password: Joi.string().min(6).max(1024).required(),
+    confirm_new_password: Joi.string().min(6).max(1024).required(),
+  }
+
+  const JoiSchema = Joi.object(resetPasswordSchema)
+  return JoiSchema.validate(data)
+}
+
+//
+const changePasswordValidation = (data) => {
+  const resetPasswordSchema = {
+    email: Joi.string().min(6).max(256).required().email(),
+    username: Joi.string().min(6).max(256).required(),
     old_password: Joi.string().min(6).max(1024).required(),
     new_password: Joi.string().min(6).max(1024).required(),
     confirm_new_password: Joi.string().min(6).max(1024).required(),
@@ -52,5 +66,6 @@ module.exports = {
   resetPasswordValidation,
   loginWithEmailValidation,
   loginWithUsernameValidation,
+  changePasswordValidation,
   signupValidation,
 }

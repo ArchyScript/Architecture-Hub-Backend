@@ -8,6 +8,7 @@ const {
   loginWithUsernameValidation,
   signupValidation,
   resetPasswordValidation,
+  changePasswordValidation,
 } = require('../validation/auth')
 const { assignUserToken } = require('../middlewares/assignUserToken')
 
@@ -126,18 +127,67 @@ const resetPassword = async (req, res) => {
     const { value, error } = resetPasswordValidation(req.body)
     if (error) return res.status(400).send(error.details[0].message)
 
-    const { _id } = req.params
-    const { email, old_password, new_password, confirm_new_password } = value
+    // const { _id } = req.params
+    const { email, username, new_password, confirm_new_password } = value
+
+    if (new_password !== confirm_new_password)
+      return res.status(400).send('passwords must match')
+
+    // checks if user exist (case-insensitive)
+    const user = await Users.findOne({ username })
+    if (!user) return res.status(400).send('invalid credentials')
+
+    if (user.lowercase_email !== email.toLowerCase())
+      return res.status(400).send('email does not match')
+
+    const { _id } = user
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(new_password, salt)
+
+    await Users.updateOne(
+      { _id },
+      {
+        $set: {
+          password: hashedPassword,
+        },
+      },
+    )
+
+    // assign token
+    assignUserToken(_id, res)
+  } catch (error) {
+    return res.send(error)
+  }
+}
+
+//
+const changePassword = async (req, res) => {
+  try {
+    const { value, error } = changePasswordValidation(req.body)
+    if (error) return res.status(400).send(error.details[0].message)
+
+    // const { _id } = req.params
+    const {
+      email,
+      username,
+      old_password,
+      new_password,
+      confirm_new_password,
+    } = value
 
     if (new_password !== confirm_new_password)
       return res.status(400).send('New password must match')
 
     // checks if user exist (case-insensitive)
-    const user = await Users.findOne({ _id })
-    if (!user) return res.status(400).send('No User found')
+    const user = await Users.findOne({ username })
+    if (!user) return res.status(400).send('invalid credentials')
 
     if (user.lowercase_email !== email.toLowerCase())
       return res.status(400).send('User email does not match')
+
+    const { _id } = user
 
     // checks if email exist (case-insensitive)
     // const user = await Users.findOne({
@@ -146,7 +196,7 @@ const resetPassword = async (req, res) => {
 
     // Check if user password is valid
     const validPassword = await bcrypt.compare(old_password, user.password)
-    if (!validPassword) return res.status(400).send('Incorrect credentials')
+    if (!validPassword) return res.status(400).send('')
 
     // Check if users new password matches the previous one
     if (old_password === new_password)
@@ -190,4 +240,5 @@ module.exports = {
   loginWithUsername,
   resetPassword,
   logout,
+  changePassword,
 }
