@@ -140,6 +140,13 @@ const resetPassword = async (req, res) => {
     if (user.lowercase_email !== email.toLowerCase())
       return res.status(400).send('email does not match')
 
+    const isNewPasswordSameAsOld = await bcrypt.compare(
+      new_password,
+      user.password,
+    )
+    if (isNewPasswordSameAsOld)
+      return res.status(400).send('Use another password for security purpose')
+
     const { _id } = user
 
     // Hash new password
