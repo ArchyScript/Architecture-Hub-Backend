@@ -15,6 +15,8 @@ const allScholarships = async (req, res) => {
 
 // Create new scholarship
 const createScholarship = async (req, res) => {
+  if (!req.file) return res.status(400).send('No image selected')
+
   const request_body = { ...req.body, file_path: req.file.path }
   const { creator_id } = req.params
 
@@ -49,8 +51,10 @@ const createScholarship = async (req, res) => {
     const savedScholarship = await newScholarship.save()
 
     const newScholarshipObject = {
-      competition_id: savedScholarship._id,
+      scholarship_id: savedScholarship._id,
     }
+
+    console.log(newScholarshipObject)
 
     await Users.updateOne(
       { _id: creator_id },
@@ -60,6 +64,7 @@ const createScholarship = async (req, res) => {
         },
       },
     )
+
     res.send(`"@${user.username}", you just added a new scholarship`)
   } catch (error) {
     res.send(error)
