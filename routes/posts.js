@@ -21,7 +21,7 @@ router.post(
   newPostWithImage,
 )
 // router.patch('/:poster_id/:post_id', updatePost)
-router.delete('/delete/:poster_id/:post_id', deletePost)
+router.delete('/:poster_id/:post_id', deletePost)
 
 // router.get('/', verifyUserToken, allPosts)
 // router.get('/:post_id', verifyUserToken, singlePost)

@@ -18,6 +18,6 @@ router.post(
 )
 // router.post('/:creator_id', createScholarship)
 router.patch('/:creator_id/:scholarship_id', updateScholarship)
-router.delete('/delete/:creator_id/:scholarship_id', deleteScholarship)
+router.delete('/:creator_id/:scholarship_id', deleteScholarship)
 
 module.exports = router
