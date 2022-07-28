@@ -18,6 +18,6 @@ router.post(
 )
 // router.post('/:creator_id', createCompetition)
 router.patch('/:creator_id/:competition_id', updateCompetition)
-router.delete('/:creator_id/:competition_id', deleteCompetition)
+router.delete('/delete/:creator_id/:competition_id', deleteCompetition)
 
 module.exports = router
