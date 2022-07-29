@@ -1,5 +1,9 @@
 const Users = require('../models/Users')
 const Competitions = require('../models/Competitions')
+const {
+  CompetitionComments,
+  CompetitionLikes,
+} = require('../models/Reactions.Competitions')
 const { competitionValidation } = require('../validation/competitions')
 const cloudinary = require('../config/cloudinary')
 
@@ -131,12 +135,32 @@ const deleteCompetition = async (req, res) => {
 
     const competition = await Competitions.findOne({ _id: competition_id })
     if (!competition)
-      return res.status(400).send('Cannot fetch data of invalid user')
+      return res.status(400).send('Cannot fetch data of invalid competition')
 
-    if (competition.creator_id !== creator_id)
+    // Checks if user have any competition
+    if (user.competitions && user.competitions.length < 1)
       return res
         .status(400)
-        .send(`"@${user.username}", you cannot delete competition`)
+        .send(`Hi "@${user.username}",  you have no competition to delete'`)
+
+    let did_user_create_this_competition = false
+    const otherCompetitions = []
+
+    // Checks if user created this competition
+    user.competitions.forEach((competition) => {
+      if (competition.competition_id === competition_id) {
+        did_user_create_this_competition = true
+      } else {
+        if (competition.competition_id !== '') {
+          otherCompetitions.push(competition)
+        }
+      }
+    })
+
+    if (!did_user_create_this_competition)
+      return res
+        .status(400)
+        .send(`Hi "@${user.username}", you did not create this competition`)
 
     if (competition.competition_image.cloudinary_id !== '') {
       await cloudinary.uploader.destroy(
@@ -144,9 +168,35 @@ const deleteCompetition = async (req, res) => {
       )
     }
 
+    // delete comments related to competition
+    if (competition.comments && competition.comments.length >= 1) {
+      competition.comments.forEach(async (each_competition_comment) => {
+        const { comment_id } = each_competition_comment
+        await CompetitionComments.deleteOne({ _id: comment_id })
+      })
+    }
+    // delete likes related to competition
+    if (competition.likes && competition.likes.length >= 1) {
+      competition.likes.forEach(async (each_competition_like) => {
+        const { like_id } = each_competition_like
+        await CompetitionLikes.deleteOne({ _id: like_id })
+      })
+    }
+
+    //
     await Competitions.deleteOne({
       _id: competition_id,
     })
+
+    // update user competitions array
+    await Users.updateOne(
+      { _id: creator_id },
+      {
+        $set: {
+          competitions: otherCompetitions,
+        },
+      },
+    )
 
     res.send(`"@${user.username}", you successfully deleted competition`)
   } catch (error) {

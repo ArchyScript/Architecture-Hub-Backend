@@ -1,5 +1,9 @@
 const Users = require('../models/Users')
 const Scholarships = require('../models/Scholarships')
+const {
+  ScholarshipComments,
+  ScholarshipLikes,
+} = require('../models/Reactions.Scholarships')
 const { scholarshipValidation } = require('../validation/scholarships')
 const cloudinary = require('../config/cloudinary')
 
@@ -53,8 +57,6 @@ const createScholarship = async (req, res) => {
     const newScholarshipObject = {
       scholarship_id: savedScholarship._id,
     }
-
-    console.log(newScholarshipObject)
 
     await Users.updateOne(
       { _id: creator_id },
@@ -135,23 +137,69 @@ const deleteScholarship = async (req, res) => {
 
     const scholarship = await Scholarships.findOne({ _id: scholarship_id })
     if (!scholarship)
-      return res.status(400).send('Cannot fetch data of invalid user')
+      return res.status(400).send('Cannot fetch data of invalid scholarship')
 
-    if (scholarship.creator_id !== creator_id)
+    // Checks if user have any scholarship
+    if (user.scholarships && user.scholarships.length < 1)
       return res
         .status(400)
-        .send(`"@${user.username}", you cannot delete scholarship`)
+        .send(`Hi "@${user.username}",  you have no scholarship to delete'`)
 
+    let did_user_create_this_scholarship = false
+    const otherScholarships = []
+
+    // Checks if user created this scholarship
+    user.scholarships.forEach((scholarship) => {
+      if (scholarship.scholarship_id === scholarship_id) {
+        did_user_create_this_scholarship = true
+      } else {
+        if (scholarship.scholarship_id !== '') {
+          otherScholarships.push(scholarship)
+        }
+      }
+    })
+
+    if (!did_user_create_this_scholarship)
+      return res
+        .status(400)
+        .send(`Hi "@${user.username}", you did not create this scholarship`)
+
+    //
     if (scholarship.scholarship_image.cloudinary_id !== '') {
       await cloudinary.uploader.destroy(
         scholarship.scholarship_image.cloudinary_id,
       )
     }
 
+    // delete comments related to scholarship
+    if (scholarship.comments && scholarship.comments.length >= 1) {
+      scholarship.comments.forEach(async (each_scholarship_comment) => {
+        const { comment_id } = each_scholarship_comment
+        await ScholarshipComments.deleteOne({ _id: comment_id })
+      })
+    }
+    // delete likes related to scholarship
+    if (scholarship.likes && scholarship.likes.length >= 1) {
+      scholarship.likes.forEach(async (each_scholarship_like) => {
+        const { like_id } = each_scholarship_like
+        await ScholarshipLikes.deleteOne({ _id: like_id })
+      })
+    }
+
+    //
     await Scholarships.deleteOne({
       _id: scholarship_id,
     })
 
+    // update user scholarships array
+    await Users.updateOne(
+      { _id: creator_id },
+      {
+        $set: {
+          scholarships: otherScholarships,
+        },
+      },
+    )
     res.send(`"@${user.username}", you successfully deleted scholarship`)
   } catch (error) {
     res.send(error)

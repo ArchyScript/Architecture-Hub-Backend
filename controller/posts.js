@@ -4,6 +4,7 @@ const {
   postWithImageValidation,
 } = require('../validation/posts')
 const Users = require('../models/Users')
+const { PostComments, PostLikes } = require('../models/Reactions.Posts')
 const cloudinary = require('../config/cloudinary')
 
 // Get all posts
@@ -195,26 +196,57 @@ const deletePost = async (req, res) => {
         .status(400)
         .send(`Hi "@${user.username}",  you have no post to delete'`)
 
+    let did_user_create_this_post = false
+    const otherPosts = []
+
     // Checks if user created this post
-    const filteredPost = user.posts.find((post) => post.post_id == post_id)
-    if (!filteredPost)
+    user.posts.forEach((post) => {
+      if (post.post_id === post_id) {
+        did_user_create_this_post = true
+      } else {
+        if (post.post_id !== '') {
+          otherPosts.push(post)
+        }
+      }
+    })
+
+    if (!did_user_create_this_post)
       return res
         .status(400)
         .send(`Hi "@${user.username}", you did not create this post`)
 
+    // delete image from cloudinary server
     if (post.post_image.cloudinary_id !== '') {
       await cloudinary.uploader.destroy(post.post_image.cloudinary_id)
     }
 
-    // filter out the deleted post and kep the remaing post(s) available
-    const otherPosts = user.posts.filter((post) => post !== filteredPost)
+    // delete comments related to post
+    if (post.comments && post.comments.length >= 1) {
+      post.comments.forEach(async (each_post_comment) => {
+        const { comment_id } = each_post_comment
+        await PostComments.deleteOne({ _id: comment_id })
+      })
+    }
+    // delete likes related to post
+    if (post.likes && post.likes.length >= 1) {
+      post.likes.forEach(async (each_post_like) => {
+        const { like_id } = each_post_like
+        await PostLikes.deleteOne({ _id: like_id })
+      })
+    }
+
+    /*
+            "comment_id": "62e40e67a37bd52c969f66c5"
+        },
+        {
+            "comment_id": "62e4121bce14ab7b9e0f3e19" */
 
     // Delete post from Posts collection
     await Posts.deleteOne({ _id: post_id })
 
     // update user posts array
     await Users.updateOne(
-      { poster_id },
+      { _id: poster_id },
       {
         $set: {
           posts: otherPosts,
