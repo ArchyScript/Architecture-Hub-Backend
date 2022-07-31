@@ -36,11 +36,23 @@ const bio = Joi.object({
 })
 
 //User-defined function to validate the user
-const userValidation = (userData) => {
+const userBioValidation = (data) => {
   const UserSchema = { bio }
 
   const JoiSchema = Joi.object(UserSchema)
-  return JoiSchema.validate(userData)
+  return JoiSchema.validate(data)
 }
 
-module.exports = { userValidation }
+//
+const userAuthValidation = (data) => {
+  const SignupSchema = {
+    username: Joi.string().min(4).max(256).required(),
+    email: Joi.string().min(6).max(256).required().email(),
+    password: Joi.string().min(6).max(1024).required(),
+  }
+
+  const JoiSchema = Joi.object(SignupSchema)
+  return JoiSchema.validate(data)
+}
+
+module.exports = { userBioValidation, userAuthValidation }

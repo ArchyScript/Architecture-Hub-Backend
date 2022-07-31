@@ -180,10 +180,12 @@ const UserSchema = new Schema(
     lowercase_email: {
       type: String,
       required: true,
+      default: '',
     },
     lowercase_username: {
       type: String,
       required: true,
+      default: '',
     },
   },
   { timestamps: true },

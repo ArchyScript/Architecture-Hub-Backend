@@ -3,7 +3,8 @@ const {
   allUsers,
   specificUserById,
   specificUserByUsername,
-  updateUserAccount,
+  updateUserBioAccount,
+  updateUserAuthInfo,
   deleteUserAccount,
 } = require('../controller/users')
 const {
@@ -22,7 +23,7 @@ const { verifyUserToken } = require('../middlewares/verifyUserToken')
 //
 // router.get('/', verifyUserToken, allUsers)
 // router.get('/:user_id', verifyUserToken, specificUserById)
-// router.patch('/:user_id', verifyUserToken, updateUserAccount)
+// router.patch('/:user_id', verifyUserToken, updateUserBioAccount)
 // // delete account
 // router.delete('/:user_id', verifyUserToken, deleteUserAccount)
 
@@ -52,7 +53,8 @@ const { verifyUserToken } = require('../middlewares/verifyUserToken')
 router.get('/', allUsers)
 router.get('/_id/:_id', specificUserById)
 router.get('/username/:username', specificUserByUsername)
-router.patch('/update/:_id', updateUserAccount)
+router.patch('/update/bio/:_id', updateUserBioAccount)
+router.patch('/update/auth/:_id', updateUserAuthInfo)
 // delete account
 router.delete('/delete/:_id', deleteUserAccount)
 
