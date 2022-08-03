@@ -10,7 +10,7 @@ const cloudinary = require('../config/cloudinary')
 // Get all scholarships
 const allScholarships = async (req, res) => {
   try {
-    const scholarships = await Scholarships.find()
+    const scholarships = await (await Scholarships.find()).reverse()
     res.send(scholarships)
   } catch (error) {
     res.send(error)

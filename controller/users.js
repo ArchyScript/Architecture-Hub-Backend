@@ -8,7 +8,7 @@ const { userBioValidation, userAuthValidation } = require('../validation/users')
 // all users
 const allUsers = async (req, res) => {
   try {
-    const users = await Users.find()
+    const users = await (await Users.find()).reverse()
 
     // to reset users default followers
     // users.forEach(async (user) => {

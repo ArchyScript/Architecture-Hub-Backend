@@ -10,7 +10,7 @@ const cloudinary = require('../config/cloudinary')
 // Get all posts
 const allPosts = async (req, res) => {
   try {
-    const posts = await Posts.find()
+    const posts = await (await Posts.find()).reverse()
     res.send(posts)
   } catch (error) {
     res.send(error)

@@ -10,7 +10,7 @@ const cloudinary = require('../config/cloudinary')
 // Get all competitions
 const allCompetitions = async (req, res) => {
   try {
-    const competitions = await Competitions.find()
+    const competitions = await (await Competitions.find()).reverse()
     res.send(competitions)
   } catch (error) {
     res.send(error)
