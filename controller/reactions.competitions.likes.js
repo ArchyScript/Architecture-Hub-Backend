@@ -6,7 +6,7 @@ const { likeValidation } = require('../validation/reactions')
 // Get all likes
 const allCompetitionsLikes = async (req, res) => {
   try {
-    const likes = await CompetitionLikes.find()
+    const likes = await (await CompetitionLikes.find()).reverse()
     if (likes.length < 1) return res.status(400).send('Noliked competition')
 
     res.send(likes)

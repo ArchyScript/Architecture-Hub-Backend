@@ -7,7 +7,7 @@ const { commentValidation } = require('../validation/reactions')
 // Get all comments
 const allScholarshipsComments = async (req, res) => {
   try {
-    const comments = await ScholarshipComments.find()
+    const comments = await (await ScholarshipComments.find()).reverse()
     if (comments.length < 1)
       return res
         .status(400)

@@ -7,7 +7,7 @@ const { likeValidation } = require('../validation/reactions')
 // Get all likes
 const allScholarshipsLikes = async (req, res) => {
   try {
-    const likes = await ScholarshipLikes.find()
+    const likes = await (await ScholarshipLikes.find()).reverse()
     if (likes.length < 1) return res.status(400).send('No liked scholarship')
 
     res.send(likes)
