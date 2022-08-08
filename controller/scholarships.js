@@ -67,7 +67,8 @@ const createScholarship = async (req, res) => {
       },
     )
 
-    res.send(`"@${user.username}", you just added a new scholarship`)
+    res.send(`new scholarship added`)
+    // res.send(`"@${user.username}", you just added a new scholarship`)
   } catch (error) {
     res.send(error)
   }
@@ -121,7 +122,8 @@ const updateScholarship = async (req, res) => {
       },
     )
 
-    res.send(`"@${user.username}", you successfully updated scholarship`)
+    res.send(`scholarship updated`)
+    // res.send(`"@${user.username}", you successfully updated scholarship`)
   } catch (error) {
     res.send(error)
   }
@@ -200,7 +202,8 @@ const deleteScholarship = async (req, res) => {
         },
       },
     )
-    res.send(`"@${user.username}", you successfully deleted scholarship`)
+    res.send(`scholarship deleted`)
+    // res.send(`"@${user.username}", you successfully deleted scholarship`)
   } catch (error) {
     res.send(error)
   }

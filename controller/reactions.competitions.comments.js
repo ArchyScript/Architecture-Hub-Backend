@@ -6,7 +6,7 @@ const { commentValidation } = require('../validation/reactions')
 // Get all comments
 const allCompetitionsComments = async (req, res) => {
   try {
-    const comments = await (await CompetitionComments.find()).reverse()
+    const comments = await CompetitionComments.find()
     if (comments.length < 1)
       return res
         .status(400)
@@ -62,6 +62,7 @@ const newCompetitionComment = async (req, res) => {
     })
 
     const savedComment = await newCompetitionComment.save()
+    console.log(savedComment)
 
     const newCommentObjectId = {
       comment_id: savedComment._id,

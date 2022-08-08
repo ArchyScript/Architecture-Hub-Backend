@@ -54,7 +54,8 @@ const newPostWithoutImage = async (req, res) => {
       },
     )
 
-    res.send(`"@${user.username}", you just added new post`)
+    res.send(`new post created`)
+    // res.send(`"@${user.username}", you just added new post`)
   } catch (error) {
     res.send(error)
   }
@@ -112,7 +113,9 @@ const newPostWithImage = async (req, res) => {
       },
     )
 
-    res.send(`"@${user.username}", you just added new post`)
+    res.send(`new post created`)
+
+    // res.send(`"@${user.username}", you just added new post`)
   } catch (error) {
     res.send(error)
   }
@@ -234,12 +237,6 @@ const deletePost = async (req, res) => {
         await PostLikes.deleteOne({ _id: like_id })
       })
     }
-
-    /*
-            "comment_id": "62e40e67a37bd52c969f66c5"
-        },
-        {
-            "comment_id": "62e4121bce14ab7b9e0f3e19" */
 
     // Delete post from Posts collection
     await Posts.deleteOne({ _id: post_id })

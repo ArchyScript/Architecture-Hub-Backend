@@ -66,7 +66,8 @@ const createCompetition = async (req, res) => {
       },
     )
 
-    res.send(`"@${user.username}", you just added a new competition`)
+    // res.send(`"@${user.username}", you just added a new competition`)
+    res.send(`Competition created`)
   } catch (error) {
     res.send(error)
   }
@@ -119,7 +120,8 @@ const updateCompetition = async (req, res) => {
       },
     )
 
-    res.send(`"@${user.username}", you successfully updated competition`)
+    // res.send(`"@${user.username}", you successfully updated competition`)
+    res.send(`Competitiion updated`)
   } catch (error) {
     res.send(error)
   }
@@ -198,7 +200,8 @@ const deleteCompetition = async (req, res) => {
       },
     )
 
-    res.send(`"@${user.username}", you successfully deleted competition`)
+    res.send(`Competitiion Deleted`)
+    // res.send(`"@${user.username}", you successfully deleted competition`)
   } catch (error) {
     res.send(error)
   }

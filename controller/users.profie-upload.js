@@ -31,7 +31,8 @@ const uploadProfilePicture = async (req, res) => {
       },
     )
 
-    res.send(`@${user.username}, you just uploaded a your profile picture`)
+    res.send(`New Profile Uploaded`)
+    // res.send(`@${user.username}, you just uploaded a your profile picture`)
   } catch (error) {
     res.send(error)
   }
@@ -57,7 +58,8 @@ const deleteProfilePicture = async (req, res) => {
         $set: { profile_picture },
       },
     )
-    res.send(`@${user.username}, you just removed a your profile picture`)
+    res.send(` profile picture deleted`)
+    // res.send(`@${user.username}, you just removed a your profile picture`)
   } catch (error) {
     res.send(error)
   }
