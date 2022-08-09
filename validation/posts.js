@@ -2,7 +2,7 @@ const Joi = require('joi')
 
 const postWithoutImageValidation = (postData) => {
   const PostSchema = {
-    content: Joi.string().max(256).required(),
+    content: Joi.string().max(512).required(),
   }
 
   const JoiSchema = Joi.object(PostSchema)
@@ -11,7 +11,7 @@ const postWithoutImageValidation = (postData) => {
 
 const postWithImageValidation = (postData) => {
   const PostSchema = {
-    content: Joi.string().max(256).optional(),
+    content: Joi.string().max(512).optional(),
     file_path: Joi.string().required(),
   }
 
