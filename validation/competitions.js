@@ -7,7 +7,7 @@ const competitionValidation = (competitionData) => {
     link: Joi.string().required(),
     host: Joi.string().required(),
     file_path: Joi.string().required(),
-    description: Joi.string().min(15).max(256).required(),
+    description: Joi.string().min(15).max(1024).required(),
     content: Joi.string().min(10).max(1024).required(),
   }
 
